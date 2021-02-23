@@ -1,10 +1,3 @@
-# Ported From DarkCobra , Originally By Uniborg
-# Ultroid - UserBot
-#
-# This file is a part of < https://github.com/TeamUltroid/Ultroid/ >
-# PLease read the GNU Affero General Public License in
-# <https://www.github.com/TeamUltroid/Ultroid/blob/main/LICENSE/>.
-
 import html
 from telethon.tl import functions
 from telethon.tl.functions.users import GetFullUserRequest
@@ -43,7 +36,7 @@ async def _(event):
     await ultroid_bot(functions.photos.UploadProfilePhotoRequest(pfile))  # pylint:disable=E0602
     await event.delete()
     await ultroid_bot.send_message(
-        event.chat_id, "**Hello!! Guys..**", reply_to=reply_message
+        event.chat_id, "**Let's be the One**", reply_to=reply_message
     )
     
 
@@ -63,7 +56,7 @@ async def _(event):
     await ultroid_bot(functions.account.UpdateProfileRequest(about=bio))
     await ultroid_bot(functions.account.UpdateProfileRequest(first_name=name))
     await ultroid_bot(functions.account.UpdateProfileRequest(last_name=ok))
-    await eor(event, "succesfully reverted to your account back")
+    await eor(event, "Succesfully reverted your account back")
     
 
 async def get_full_user(event):
