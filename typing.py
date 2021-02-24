@@ -32,7 +32,7 @@ async def _(event):
     typing_symbol = "|"
     previous_text = ""
     await okla.edit(typing_symbol)
-    await asyncio.sleep(0.4)
+    await asyncio.sleep(0.05)
     for character in input_str:
         previous_text = previous_text + "" + character
         typing_text = previous_text + "" + typing_symbol
