@@ -10,7 +10,7 @@
 ✘ Commands Available -
 
 • `{i}test`
-    Test Ur Heroku Server Speed.
+    Test CɪᴘʜᴇʀX Server Speed.
 
 """
 from telethon import events
@@ -57,11 +57,11 @@ async def _(event):
         if as_text:
             await xx.edit("""`CɪᴘʜᴇʀX Ⲋⲉʀⳳⲉʀ Ⲥⲁⳑⲥυⳑⲁⲧⲉⲇ Ⲋⲣⲉⲉⲇ Ⲓⲛ {} Ⲋⲉⲥ`
 
-`Download: {}`
-`Upload: {}`
+`Dᴏwnlᴏᴀd: {}`
+`Uᴩlᴏᴀd: {}`
 `Ping: {}`
-`Internet Service Provider: {}`
-`ISP Rating: {}`""".format(ms, convert_from_bytes(download_speed), convert_from_bytes(upload_speed), ping_time, i_s_p, i_s_p_rating))
+`Inᴛᴇrnᴇᴛ Sᴇrviᴄᴇ Prᴏvidᴇr: {}`
+`ISP Rᴀᴛing: {}`""".format(ms, convert_from_bytes(download_speed), convert_from_bytes(upload_speed), ping_time, i_s_p, i_s_p_rating))
         else:
             await event.client.send_file(
                 event.chat_id,
