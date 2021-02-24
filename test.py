@@ -33,7 +33,7 @@ async def _(event):
         as_document = True
     elif input_str == "text":
         as_text = True
-    xx = await eor(event, "`Calculating ur Ultroid Server Speed. Please wait!`")
+    xx = await eor(event, "`Ⲥⲁⳑⲥυⳑⲁⲧⲓⲛⳋ CɪᴘʜᴇʀX Ⲋⲉʀⳳⲉʀ Ⲋⲣⲉⲉⲇ...`")
     start = datetime.now()
     s = speedtest.Speedtest()
     s.get_best_server()
@@ -55,7 +55,7 @@ async def _(event):
         response = s.results.share()
         speedtest_image = response
         if as_text:
-            await xx.edit("""`Ultroid Server Speed in {} sec`
+            await xx.edit("""`CɪᴘʜᴇʀX Ⲋⲉʀⳳⲉʀ Ⲥⲁⳑⲥυⳑⲁⲧⲉⲇ Ⲋⲣⲉⲉⲇ Ⲓⲛ {} Ⲋⲉⲥ`
 
 `Download: {}`
 `Upload: {}`
@@ -66,14 +66,14 @@ async def _(event):
             await event.client.send_file(
                 event.chat_id,
                 speedtest_image,#heeehe
-                caption="**SpeedTest** completed in {} seconds".format(ms),
+                caption="**Ⲋⲣⲉⲉⲇ Ⲧⲉⲋⲧ** Ⲥⲟⲙⲣⳑⲉⲧⲉⲇ ⲓⲛ {} Ⲋⲉⲥⲟⲛⲇⲋ".format(ms),
                 force_document=as_document,
                 reply_to=reply_msg_id,
                 allow_cache=False
             )
             await event.delete()
     except Exception as exc:#dc
-        await xx.edit("""**SpeedTest** completed in {} seconds
+        await xx.edit("""**Ⲋⲣⲉⲉⲇ Ⲧⲉⲋⲧ** Ⲥⲟⲙⲣⳑⲉⲧⲉⲇ ⲓⲛ {} Ⲋⲉⲥⲟⲛⲇⲋ
 Download: {}
 Upload: {}
 Ping: {}
