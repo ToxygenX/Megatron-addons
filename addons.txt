@@ -1,4 +1,4 @@
 pokedex.py
 pyfiglet
 pyjokes
-logging
+lyrics_extractor
