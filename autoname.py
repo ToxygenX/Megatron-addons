@@ -42,7 +42,7 @@ async def _(event):
 
         try:
 
-            await altroid_bot(
+            await borg( 
                 functions.account.UpdateProfileRequest(  # pylint:disable=E0602
                     first_name=name
                 )
