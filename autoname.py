@@ -1,17 +1,21 @@
+"""
+✘ Commands Available -
+• `.autoname`
+    Autoname profile 
+"""
+
 from telethon.errors import FloodWaitError
 from telethon.tl import functions
 
-import logging 
 import time
 
 from . import *
-from userbot import CMD_HELP
 
 
 DEL_TIME_OUT = 60
 DEFAULTUSER = str(OWNER_NAME) if OWNER_NAME else "CɪᴘʜᴇʀX"
 
-@ultroid_cmd(pattern="clone ?(.*)") 
+@ultroid_cmd(pattern=f"autoname") 
 async def _(event):
     sed = await eor(event, "`sᴛᴀʀᴛɪɴɢ ᴀᴜᴛᴏɴᴀᴍᴇ. ᴘʟᴇᴀsᴇ ᴡᴀɪᴛ...`")
     await sed.edit(event, "`CɪᴘʜᴇʀX ᴀᴜᴛᴏɴᴀᴍᴇ sᴛᴀʀᴛᴇᴅ`")
@@ -42,7 +46,7 @@ async def _(event):
 
         try:
 
-            await borg( 
+            await altroid_bot( 
                 functions.account.UpdateProfileRequest(  # pylint:disable=E0602
                     first_name=name
                 )
