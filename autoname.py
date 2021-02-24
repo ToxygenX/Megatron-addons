@@ -50,14 +50,9 @@ async def _(event):
 
         except FloodWaitError as ex:
 
-            logger.warning(str(e))
+            logger.warn(str(e))
 
             await asyncio.sleep(ex.seconds)
  
 
-
-CMD_HELP.update({
-    "autoname":
-    ".autoname\
-\nUsage: Turn on auto profile name.\
-"})
+HELP.update({f"{__name__.split('.')[1]}": f"{__doc__.format(i=Var.HNDLR)}"})
