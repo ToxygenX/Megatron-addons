@@ -41,13 +41,13 @@ async def _(event):
         except Exception as e:
             logger.warn(str(e))
             pass
-        await asyncio.sleep(0.4)
+        await asyncio.sleep(0.05)
         try:
             await okla.edit(previous_text)
         except Exception as e:
             logger.warn(str(e))
             pass
-        await asyncio.sleep(0.4)
+        await asyncio.sleep(0.05)
 
 
 HELP.update({f"{__name__.split('.')[1]}": f"{__doc__.format(i=Var.HNDLR)}"})
