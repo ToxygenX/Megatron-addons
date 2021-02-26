@@ -25,7 +25,7 @@ from . import *
 from cython.misc._supporters import logging
 from cython.misc._decorators import decorator, wrapper, register, ultroid_cmd
 
-ENABLE_HAREM = os.environ.get("ENABLE_HAREM", False)
+ENABLE_HAREM = os.environ.get("ENABLE_HAREM", True)
 
 sedpath = Config.TMP_DOWNLOAD_DIRECTORY
 
