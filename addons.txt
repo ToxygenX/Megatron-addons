@@ -1,8 +1,4 @@
 pokedex.py
 pyfiglet
 pyjokes
-lyrics_extractor
-logging 
-google_images_download 
-rextester_py
-glitch_this
+lyrics_extractor 
