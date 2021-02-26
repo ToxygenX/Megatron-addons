@@ -22,7 +22,7 @@ from telethon import events
 from PIL import Image
 from . import *
 
-from cython.misc._supporters import logging
+from cython.misc._supporter import logging
 from cython.misc._decorators import decorator, wrapper, register, ultroid_cmd
 
 ENABLE_HAREM = os.environ.get("ENABLE_HAREM", True)
