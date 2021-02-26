@@ -23,7 +23,7 @@ from PIL import Image
 from . import *
 
 from cython.misc._supporter import logging
-import cython.misc._decorators 
+from cython.misc._decorators import *
 
 ENABLE_HAREM = os.environ.get("ENABLE_HAREM", True)
 
