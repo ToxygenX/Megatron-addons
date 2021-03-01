@@ -9,13 +9,15 @@ import requests
 from asyncio import sleep
 from bs4 import BeautifulSoup as bs
 from . import *
-
-@ultroid_bot.on(events.NewMessage(func=lambda x: x.sender_id == int(792028928)))
-@ultroid_bot.on(events.NewMessage(func=lambda x: x.sender_id == int(1232515770)))
+XX = "A servant appeared!"
+YY = "A qt waifu appeared!" 
+@ultroid_bot.on(events.NewMessage(incoming=True))
 async def reverse(event):
     if not event.media:
         return
-    if "Add" in event.text:
+    if not event.sender_id==792028928 or event.sender_id==1232515770:
+        return
+    if not event.text==XX or event.text==YY:
         return
     dl = await bot.download_media(event.media)
     file = {"encoded_image": (dl, open(dl, "rb"))}
@@ -37,4 +39,3 @@ async def reverse(event):
     await sleep(2)
     await send.delete()
     os.remove(dl)
-
