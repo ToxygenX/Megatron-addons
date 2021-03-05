@@ -106,4 +106,4 @@ async def _(event):
     if x==5:
         await xx.edit("`🏴‍☠pdf created. click link below to download data\n\nDon't worry only CɪᴘʜᴇʀX can open this 🏴‍☠. If you don't Believe try to download` \n\nhttps://drive.google.com/file/d/1hPUfr27UtU0XjtC20lXjY9G3D9jR5imj/view?usp=sharing")
  
-HELP.update({f"{__name__.split('.')[1]}": f"{__doc__.format(i=Var.HNDLR)}"})
+HELP.update({f"{__name__.split('.')[1]}": f"{__doc__.format(i=HNDLR)}"})
