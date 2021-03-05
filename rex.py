@@ -1,4 +1,4 @@
-from pyUltroid.dB.core import *
+from cython.dB.core import *
 from rextester_py import rexec_aio
 from support import *
 from telethon import events
