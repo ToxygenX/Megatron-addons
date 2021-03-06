@@ -22,7 +22,7 @@ from . import *
 
 # RegEx by https://t.me/c/1220993104/500653 ( @SnapDragon7410 )
 
-@ultroid_cmd(pattern="pattern="text ?(?:(.*?) \| )?(.*)")
+@ultroid_cmd(pattern="pattern="text ?(.*)")
 async def sticklet(event):
     R = random.randint(0, 256)
     G = random.randint(0, 256)
