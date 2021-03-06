@@ -75,6 +75,6 @@ async def spammer(e):
     await e.delete()
     for i in range(1, counter):
         await e.respond(spam_message)
-        await sleep(spamDelay)
+        await e.sleep(spamDelay)
 
 HELP.update({f"{__name__.split('.')[1]}": f"{__doc__.format(i=HNDLR)}"})
