@@ -25,7 +25,7 @@ async def coder_print(event):
         f"{c}",
         Python3Lexer(),
         ImageFormatter(font_name="DejaVu Sans Mono", line_numbers=True),
-        "result.png",
+        "cipherx.png",
     )
     res = await event.client.send_message(
         event.chat_id,
@@ -33,14 +33,12 @@ async def coder_print(event):
         reply_to=event.reply_to_msg_id,
     )
     await event.client.send_file(
-        event.chat_id, "result.png", force_document=True, reply_to=event.reply_to_msg_id
+        event.chat_id, "cipherx.png", force_document=True, reply_to=event.reply_to_msg_id
     )
-    # await event.client.send_file(event.chat_id, "resuly.png",
-    # force_document=False, reply_to=event.reply_to_msg_id)
     await res.delete()
     await event.delete()
     os.remove(a)
-    os.remove("result.png")
+    os.remove("cipherx.png")
 
 
 HELP.update({f"{__name__.split('.')[1]}": f"{__doc__.format(i=HNDLR)}"})
