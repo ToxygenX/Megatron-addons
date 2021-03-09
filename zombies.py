@@ -6,7 +6,7 @@
 • `{i}zombies clean`
     Remove the deleted accounts if the user is admin.
 """
-
+import asyncio
 from asyncio import sleep
 from telethon.errors import ChatAdminRequiredError, UserAdminInvalidError
 from telethon.tl.functions.channels import EditBannedRequest
