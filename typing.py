@@ -28,7 +28,7 @@ async def _(event):
     try:
         okla=await eor(event,shiiinabot)
     except Exception as e:
-        logger.warn(str(e))
+        print(str(e))
     typing_symbol = "|"
     previous_text = ""
     await okla.edit(typing_symbol)
@@ -39,13 +39,13 @@ async def _(event):
         try:
             await okla.edit(typing_text)
         except Exception as e:
-            logger.warn(str(e))
+            print(str(e))
             pass
         await asyncio.sleep(0.05)
         try:
             await okla.edit(previous_text)
         except Exception as e:
-            logger.warn(str(e))
+            print(e)
             pass
         await asyncio.sleep(0.05)
 
