@@ -1,6 +1,8 @@
+gtts
 pokedex.py
+pyshorteners
 pyfiglet
 pyjokes
+wikipedia
+rextester-py
 lyrics_extractor==3.0.1
-pyshorteners
-pygments
