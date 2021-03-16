@@ -1,6 +1,12 @@
 # from Freaky Userbot
 # Add pyshorteners in requirements.txt
 
+"""
+✘ Commands Available -
+• `{i}shorturl <url>`
+   Get the shorted form of given url.
+"""
+
 import pyshorteners
 
 from . import *
@@ -26,13 +32,3 @@ async def vom(event):
         await a.edit(short)
     except Exception as e:
         await a.edit("SomeThing Went Wrong. \n**ERROR** : " + str(e))
-
-
-HELP.update(
-    {
-        "shorturl": f"UrlShortner\
-\n\nSyntax : {HNDLR}shorturl <link>\
-\nUsage : Shortens Your Url\
-if used shorten link, it will be expanded"
-    }
-)
