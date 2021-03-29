@@ -1,3 +1,4 @@
+faker
 gtts
 glitch_this
 pokedex.py
