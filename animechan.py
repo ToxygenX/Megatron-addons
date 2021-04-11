@@ -5,10 +5,10 @@
 """
 Fetch Random anime quotes from [AnimeChan](https://animechan.vercel.app)
 
-Command : {i}aniquote
+Command : `{i}aniquote`
 """
 
-from . import HELP
+from . import *
 import requests
 
 
