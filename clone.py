@@ -10,9 +10,11 @@
 """
 
 import html
+
 from telethon.tl import functions
 from telethon.tl.functions.users import GetFullUserRequest
 from telethon.tl.types import MessageEntityMentionName
+
 from . import *
 
 
@@ -20,13 +22,19 @@ from . import *
 async def _(event):
     eve = await eor(event, "`Processing...`")
     reply_message = await event.get_reply_message()
+    whoiam = await ultroid_bot(GetFullUserRequest(ultroid_bot.uid))
+    if whoiam.about:
+        mybio = str(ultroid_bot.me.id) + "01"
+        udB.set(f"{mybio}", whoiam.about)  # saving bio for revert
+    udB.set(f"{ultroid_bot.uid}02", whoiam.user.first_name)
+    if whoiam.user.last_name:
+        udB.set(f"{ultroid_bot.uid}03", whoiam.user.last_name)
     replied_user, error_i_a = await get_full_user(event)
     if replied_user is None:
         await eve.edit(str(error_i_a))
         return
     user_id = replied_user.user.id
-    profile_pic = await event.client.download_profile_photo(
-        user_id)
+    profile_pic = await event.client.download_profile_photo(user_id)
     first_name = html.escape(replied_user.user.first_name)
     if first_name is not None:
         first_name = first_name.replace("\u2060", "")
@@ -39,19 +47,14 @@ async def _(event):
     user_bio = replied_user.about
     if user_bio is not None:
         user_bio = replied_user.about
-    await ultroid_bot(functions.account.UpdateProfileRequest(
-        first_name=first_name))
-    await ultroid_bot(functions.account.UpdateProfileRequest(
-        last_name=last_name)
-    )
-    await ultroid_bot(functions.account.UpdateProfileRequest(
-        about=user_bio)
-    )
+    await ultroid_bot(functions.account.UpdateProfileRequest(first_name=first_name))
+    await ultroid_bot(functions.account.UpdateProfileRequest(last_name=last_name))
+    await ultroid_bot(functions.account.UpdateProfileRequest(about=user_bio))
     pfile = await ultroid_bot.upload_file(profile_pic)  # pylint:disable=E060
     await ultroid_bot(functions.photos.UploadProfilePhotoRequest(pfile))
     await eve.delete()
     await ultroid_bot.send_message(
-        event.chat_id, "**Let's be the One**", reply_to=reply_message
+        event.chat_id, "**Lets be the same**", reply_to=reply_message
     )
 
 
@@ -59,7 +62,17 @@ async def _(event):
 async def _(event):
     name = OWNER_NAME
     ok = ""
+    mybio = str(ultroid_bot.me.id) + "01"
     bio = "Error : Bio Lost"
+    chc = udB.get(mybio)
+    if chc:
+        bio = chc
+    fname = udB.get(f"{ultroid_bot.uid}02")
+    lname = udB.get(f"{ultroid_bot.uid}03")
+    if fname:
+        name = fname
+    if lname:
+        ok = lname
     n = 1
     await ultroid_bot(
         functions.photos.DeletePhotosRequest(
@@ -69,7 +82,10 @@ async def _(event):
     await ultroid_bot(functions.account.UpdateProfileRequest(about=bio))
     await ultroid_bot(functions.account.UpdateProfileRequest(first_name=name))
     await ultroid_bot(functions.account.UpdateProfileRequest(last_name=ok))
-    await eor(event, "Succesfully reverted your account back")
+    await eor(event, "Succesfully reverted")
+    udB.delete(f"{ultroid_bot.uid}01")
+    udB.delete(f"{ultroid_bot.uid}02")
+    udB.delete(f"{ultroid_bot.uid}03")
 
 
 async def get_full_user(event):
@@ -97,8 +113,7 @@ async def get_full_user(event):
         if event.message.entities is not None:
             mention_entity = event.message.entities
             probable_user_mention_entity = mention_entity[0]
-            if isinstance(probable_user_mention_entity,
-                          MessageEntityMentionName):
+            if isinstance(probable_user_mention_entity, MessageEntityMentionName):
                 user_id = probable_user_mention_entity.user_id
                 replied_user = await event.client(GetFullUserRequest(user_id))
                 return replied_user, None
@@ -106,9 +121,7 @@ async def get_full_user(event):
                 try:
                     user_object = await event.client.get_entity(input_str)
                     user_id = user_object.id
-                    replied_user = await event.client(
-                        GetFullUserRequest(user_id)
-                    )
+                    replied_user = await event.client(GetFullUserRequest(user_id))
                     return replied_user, None
                 except Exception as e:
                     return None, e
@@ -127,5 +140,6 @@ async def get_full_user(event):
                 return replied_user, None
             except Exception as e:
                 return None, e
+
 
 HELP.update({f"{__name__.split('.')[1]}": f"{__doc__.format(i=HNDLR)}"})
