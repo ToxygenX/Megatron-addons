@@ -25,7 +25,7 @@ async def ocrify(ult):
     pat = ult.pattern_match.group(1)
     repm = await ult.get_reply_message()
     if not (repm.media and repm.media.photo):
-        return await msg.edit("`Not a Photo..`")
+        return await msg.edit("`Not a Photo...`")
     dl = await repm.download_media()
     if pat:
         atr = f"&language={pat}&"
