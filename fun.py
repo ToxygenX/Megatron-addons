@@ -5,7 +5,7 @@
     To get joke.
 
 • `{i}insult`
-    Insult someone..
+    Insult someone.
 
 • `{i}url <long url>`
     To get a shorten link of long link.
