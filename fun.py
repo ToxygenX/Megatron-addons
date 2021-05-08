@@ -82,7 +82,7 @@ async def _(event):
 
 @ultroid_cmd(pattern="decide$")
 async def _(event):
-    hm = await eor(event, "`Deciding`")
+    hm = await eor(event, "`Deciding...`")
     message_id = event.message.id
     if event.reply_to_msg_id:
         message_id = event.reply_to_msg_id
@@ -121,7 +121,7 @@ async def vtog(ult):
         return await ult.edit("`Reply to any Video`")
     xx = await eor(ult, "`Processing Takes Time...`")
     lol = await ultroid_bot.download_media(reply.media)
-    file_name = "ultroid.gif"
+    file_name = "cipherx.gif"
     clip = m.VideoFileClip(lol).subclip((4.3), (5.8)).resize(0.3)
     clip.write_gif(file_name)
     await ultroid_bot.send_file(ult.chat_id, file_name, reply_to=ult.reply_to_msg_id)
