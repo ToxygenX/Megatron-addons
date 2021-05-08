@@ -1,4 +1,3 @@
-
 """
 ✘ Commands Available
 • `{i}owo`
@@ -6,9 +5,8 @@
 """
 
 import random
-import re
-from . import HELP
 
+from . import HELP
 
 uwus = [
     "(・`ω´・)",
@@ -29,10 +27,11 @@ uwus = [
     "(°_°)",
 ]
 
-@ultroid_cmd( pattern="owo")
+
+@ultroid_cmd(pattern="owo")
 async def faces(ult):
     uff = random.choice(uwus)
-    return await eor(ult,f"{uff}")
-    
-    
+    return await eor(ult, f"{uff}")
+
+
 HELP.update({f"{__name__.split('.')[1]}": f"{__doc__.format(i=HNDLR)}"})

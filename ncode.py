@@ -1,17 +1,20 @@
 # Credits @buddhhu
-# Ported to Ultroid by @Hackintush 
+# Ported to Ultroid by @Hackintush
 
 """
 ✘ Commands Available
 • `{i}ncode <reply to file>`
-   Paste the contents of file and send as pic. 
+   Paste the contents of file and send as pic.
 """
 
 import os
+
 import pygments
 from pygments.formatters import ImageFormatter
 from pygments.lexers import Python3Lexer
-from . import * 
+
+from . import *
+
 
 @ultroid_cmd(pattern="ncode")
 async def coder_print(event):
@@ -33,7 +36,10 @@ async def coder_print(event):
         reply_to=event.reply_to_msg_id,
     )
     await event.client.send_file(
-        event.chat_id, "cipherx.png", force_document=True, reply_to=event.reply_to_msg_id
+        event.chat_id,
+        "cipherx.png",
+        force_document=True,
+        reply_to=event.reply_to_msg_id,
     )
     await res.delete()
     await event.delete()

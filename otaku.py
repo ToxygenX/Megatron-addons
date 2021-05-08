@@ -5,19 +5,24 @@
 # PLease read the GNU Affero General Public License in
 # <https://www.github.com/TeamUltroid/Ultroid/blob/main/LICENSE/>.
 import os
-import requests
 from asyncio import sleep
+
+import requests
 from bs4 import BeautifulSoup as bs
+
 from . import *
+
 XX = "A servant appeared!"
-YY = "A qt waifu appeared!" 
+YY = "A qt waifu appeared!"
+
+
 @ultroid_bot.on(events.NewMessage(incoming=True))
 async def reverse(event):
     if not event.media:
         return
-    if not event.sender_id==792028928 or event.sender_id==1232515770:
+    if not event.sender_id == 792028928 or event.sender_id == 1232515770:
         return
-    if not event.text==XX or event.text==YY:
+    if not event.text == XX or event.text == YY:
         return
     dl = await bot.download_media(event.media)
     file = {"encoded_image": (dl, open(dl, "rb"))}

@@ -2,15 +2,16 @@
 ✘ Commands Available
 • `{i}zombies`
     Gives the Number of Deleted Accounts.
-    
+
 • `{i}zombies clean`
     Remove the deleted accounts if the user is admin.
 """
-import asyncio
 from asyncio import sleep
+
 from telethon.errors import ChatAdminRequiredError, UserAdminInvalidError
 from telethon.tl.functions.channels import EditBannedRequest
 from telethon.tl.types import ChatBannedRights
+
 from . import *
 
 BANNED_RIGHTS = ChatBannedRights(
@@ -42,7 +43,7 @@ UNMUTE_RIGHTS = ChatBannedRights(until_date=None, send_messages=False)
 # ================================================
 
 
-@ultroid_cmd(pattern='zombies ?(.*)')
+@ultroid_cmd(pattern="zombies ?(.*)")
 async def rm_deletedacc(show):
     con = show.pattern_match.group(1).lower()
     del_u = 0
@@ -102,5 +103,6 @@ async def rm_deletedacc(show):
     await ehh.edit(del_status)
     await sleep(2)
     await show.delete()
-    
+
+
 HELP.update({f"{__name__.split('.')[1]}": f"{__doc__.format(i=HNDLR)}"})

@@ -1,10 +1,9 @@
-
 """
 ✘ Commands Available -
 
 • `{i}quotly | {i}qbot <colour name/code><replying a message>`
     send stickers to current chat with @QuotlyBot.
-    
+
 """
 
 from telethon import events

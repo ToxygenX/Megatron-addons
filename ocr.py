@@ -7,9 +7,10 @@
 """
 
 
-from . import *
-from telegraph import upload_file as uf
 import requests as r
+from telegraph import upload_file as uf
+
+from . import *
 
 TE = f"API not found, Please get it from ocr.space and set\n\ncommand `{HNDLR}setredis OCR_API your-api-key`"
 
@@ -35,9 +36,9 @@ async def ocrify(ult):
     li = "https://telegra.ph" + tt[0]
     gr = r.get(
         f"https://api.ocr.space/parse/imageurl?apikey={OAPI}{atr}url={li}"
-        ).json()
+    ).json()
     trt = gr["ParsedResults"][0]["ParsedText"]
-    await msg.edit(f"**🎇 ⲞⲤR Ⲣⲟʀⲧⲁⳑ\n\Rⲉⲋυⳑⲧⲋ ~ ** `{trt}`")
+    await msg.edit(f"**🎇 ⲞⲤR Ⲣⲟʀⲧⲁⳑ\n\\Rⲉⲋυⳑⲧⲋ ~ ** `{trt}`")
 
 
 HELP.update({f"{__name__.split('.')[1]}": f"{__doc__.format(i=HNDLR)}"})

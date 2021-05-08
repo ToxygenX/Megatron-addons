@@ -28,12 +28,14 @@
 """
 
 import os
-from pyjokes import get_joke
-import requests
 import random
-from . import *
-from telethon.errors import ChatSendMediaForbiddenError
+
 import moviepy.editor as m
+import requests
+from pyjokes import get_joke
+from telethon.errors import ChatSendMediaForbiddenError
+
+from . import *
 
 
 @ultroid_cmd(pattern="joke$")
@@ -50,11 +52,12 @@ async def _(event):
     sample_url = "https://da.gd/s?url={}".format(input_str)
     response_api = requests.get(sample_url).text
     if response_api:
-        await eor(event,
-                  "Shortened url==> {} for the given url==> {}.".format(
-                      response_api,
-                      input_str)
-                  )
+        await eor(
+            event,
+            "Shortened url==> {} for the given url==> {}.".format(
+                response_api, input_str
+            ),
+        )
     else:
         await eor(event, "Something went wrong. Please try again Later.")
 
@@ -68,13 +71,11 @@ async def _(event):
     r = requests.get("https://yesno.wtf/api").json()
     try:
         await ultroid_bot.send_message(
-            event.chat_id,
-            r["answer"],
-            reply_to=message_id,
-            file=r["image"])
+            event.chat_id, r["answer"], reply_to=message_id, file=r["image"]
+        )
         await hm.delete()
     except ChatSendMediaForbiddenError:
-        await eor(event, r['answer'])
+        await eor(event, r["answer"])
 
 
 @ultroid_cmd(pattern="gif ?(.*)")
@@ -84,10 +85,9 @@ async def gifs(ult):
         return await eor(ult, "`.gif <query>`")
     m = await eor(ult, "`Searching gif ...`")
     gifs = await ultroid_bot.inline_query("gif", f"{get}")
-    await gifs[0].click(ult.chat.id,
-                        reply_to=ult.reply_to_msg_id,
-                        silent=True,
-                        hide_via=True)
+    await gifs[0].click(
+        ult.chat.id, reply_to=ult.reply_to_msg_id, silent=True, hide_via=True
+    )
     await m.delete()
 
 
@@ -99,13 +99,9 @@ async def vtog(ult):
     xx = await eor(ult, "`Processing Takes Time...`")
     lol = await ultroid_bot.download_media(reply.media)
     file_name = "cipherx.gif"
-    clip = (m.VideoFileClip(lol).subclip((4.3), (5.8)).resize(0.3))
+    clip = m.VideoFileClip(lol).subclip((4.3), (5.8)).resize(0.3)
     clip.write_gif(file_name)
-    await ultroid_bot.send_file(
-        ult.chat_id,
-        file_name,
-        reply_to=ult.reply_to_msg_id
-        )
+    await ultroid_bot.send_file(ult.chat_id, file_name, reply_to=ult.reply_to_msg_id)
     os.remove(lol)
     os.remove(file_name)
     await xx.delete()
@@ -114,22 +110,18 @@ async def vtog(ult):
 @ultroid_cmd(pattern="xo$")
 async def xo(ult):
     xox = await ultroid_bot.inline_query("xobot", "play")
-    await xox[random.randrange(0, len(xox)-1)].click(
-        ult.chat.id,
-        reply_to=ult.reply_to_msg_id,
-        silent=True,
-        hide_via=True
-        )
+    await xox[random.randrange(0, len(xox) - 1)].click(
+        ult.chat.id, reply_to=ult.reply_to_msg_id, silent=True, hide_via=True
+    )
     await ult.delete()
 
 
 @ultroid_cmd(pattern="wordi$")
 async def word(ult):
     game = await ultroid_bot.inline_query("wordibot", "play")
-    await game[0].click(ult.chat.id,
-                        reply_to=ult.reply_to_msg_id,
-                        silent=True,
-                        hide_via=True)
+    await game[0].click(
+        ult.chat.id, reply_to=ult.reply_to_msg_id, silent=True, hide_via=True
+    )
     await ult.delete()
 
 
@@ -140,10 +132,8 @@ async def map(ult):
         return await eor(ult, "`.gps <query>`")
     gps = await ultroid_bot.inline_query("openmap_bot", f"{get}")
     await gps[0].click(
-        ult.chat.id,
-        reply_to=ult.reply_to_msg_id,
-        silent=True,
-        hide_via=True)
+        ult.chat.id, reply_to=ult.reply_to_msg_id, silent=True, hide_via=True
+    )
     await ult.delete()
 
 

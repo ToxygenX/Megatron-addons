@@ -11,9 +11,10 @@ import pyshorteners
 
 from . import *
 
+
 @ultroid_cmd(pattern="shorturl ?(.*)")
 async def vom(event):
-    a = await eor(event,"`Processing...`")
+    a = await eor(event, "`Processing...`")
     try:
         link = event.pattern_match.group(1)
         if not link:

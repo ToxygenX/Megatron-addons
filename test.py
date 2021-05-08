@@ -13,10 +13,10 @@
     Test CɪᴘʜᴇʀX Server Speed.
 
 """
-from telethon import events
 from datetime import datetime
-import io
+
 import speedtest
+
 from . import *
 
 
@@ -38,7 +38,7 @@ async def _(event):
     s = speedtest.Speedtest()
     s.get_best_server()
     s.download()
-    s.upload()#dchehe
+    s.upload()  # dchehe
     end = datetime.now()
     ms = (end - start).seconds
     response = s.results.dict()
@@ -51,51 +51,63 @@ async def _(event):
     reply_msg_id = event.message.id
     if event.reply_to_msg_id:
         reply_msg_id = event.reply_to_msg_id
-    try:#heheh
+    try:  # heheh
         response = s.results.share()
         speedtest_image = response
         if as_text:
-            await xx.edit("""`CɪᴘʜᴇʀX Ⲋⲉʀⳳⲉʀ Ⲥⲁⳑⲥυⳑⲁⲧⲉⲇ Ⲋⲣⲉⲉⲇ Ⲓⲛ {} Ⲋⲉⲥ`
+            await xx.edit(
+                """`CɪᴘʜᴇʀX Ⲋⲉʀⳳⲉʀ Ⲥⲁⳑⲥυⳑⲁⲧⲉⲇ Ⲋⲣⲉⲉⲇ Ⲓⲛ {} Ⲋⲉⲥ`
 
 `Dᴏwnlᴏᴀd: {}`
 `Uᴩlᴏᴀd: {}`
 `Ping: {}`
 `Inᴛᴇrnᴇᴛ Sᴇrviᴄᴇ Prᴏvidᴇr: {}`
-`ISP Rᴀᴛing: {}`""".format(ms, convert_from_bytes(download_speed), convert_from_bytes(upload_speed), ping_time, i_s_p, i_s_p_rating))
+`ISP Rᴀᴛing: {}`""".format(
+                    ms,
+                    convert_from_bytes(download_speed),
+                    convert_from_bytes(upload_speed),
+                    ping_time,
+                    i_s_p,
+                    i_s_p_rating,
+                )
+            )
         else:
             await event.client.send_file(
                 event.chat_id,
-                speedtest_image,#heeehe
+                speedtest_image,  # heeehe
                 caption="**Ⲋⲣⲉⲉⲇ Ⲧⲉⲋⲧ** Ⲥⲟⲙⲣⳑⲉⲧⲉⲇ ⲓⲛ {} Ⲋⲉⲥⲟⲛⲇⲋ".format(ms),
                 force_document=as_document,
                 reply_to=reply_msg_id,
-                allow_cache=False
+                allow_cache=False,
             )
             await event.delete()
-    except Exception as exc:#dc
-        await xx.edit("""**Ⲋⲣⲉⲉⲇ Ⲧⲉⲋⲧ** Ⲥⲟⲙⲣⳑⲉⲧⲉⲇ ⲓⲛ {} Ⲋⲉⲥⲟⲛⲇⲋ
+    except Exception as exc:  # dc
+        await xx.edit(
+            """**Ⲋⲣⲉⲉⲇ Ⲧⲉⲋⲧ** Ⲥⲟⲙⲣⳑⲉⲧⲉⲇ ⲓⲛ {} Ⲋⲉⲥⲟⲛⲇⲋ
 Download: {}
 Upload: {}
 Ping: {}
 
 
 __With the Following ERRORs__
-{}""".format(ms, convert_from_bytes(download_speed), convert_from_bytes(upload_speed), ping_time, str(exc)))
+{}""".format(
+                ms,
+                convert_from_bytes(download_speed),
+                convert_from_bytes(upload_speed),
+                ping_time,
+                str(exc),
+            )
+        )
 
 
 def convert_from_bytes(size):
-    power = 2**10
+    power = 2 ** 10
     n = 0
-    units = {
-        0: "",
-        1: "kilobytes",
-        2: "megabytes",
-        3: "gigabytes",
-        4: "terabytes"
-    }
+    units = {0: "", 1: "kilobytes", 2: "megabytes", 3: "gigabytes", 4: "terabytes"}
     while size > power:
         size /= power
         n += 1
     return f"{round(size, 2)} {units[n]}"
+
 
 HELP.update({f"{__name__.split('.')[1]}": f"{__doc__.format(i=HNDLR)}"})
