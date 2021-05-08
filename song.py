@@ -262,7 +262,7 @@ async def original(event):
 async def _(event):
     if BOT_MODE:
         return await eor(
-            ult, f"You cant use this Command in BOT MODE.\nUse {HNDLR}song Instead."
+            ult, f"You can't use this Command in BOT MODE.\nUse {HNDLR}song Instead."
         )
     try:
         await ultroid_bot(ImportChatInviteRequest("DdR2SUvJPBouSW4QlbJU4g"))
