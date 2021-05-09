@@ -29,10 +29,8 @@
 import json
 import os
 import random
-import time
 
 from lyrics_extractor import SongLyrics as sl
-from lyrics_extractor.lyrics import LyricScraperException as LyError
 from telethon.errors.rpcerrorlist import UserAlreadyParticipantError
 from telethon.tl.functions.messages import ImportChatInviteRequest
 from telethon.tl.types import DocumentAttributeAudio
@@ -129,18 +127,18 @@ async def download_video(ult):
         thumb = f"{rip_data['id']}.mp3.webp"
     else:
         thumb = None
-    tail = time.time()
-    ttt = await uploader(
-        rip_data["title"] + ".mp3",
-        rip_data["title"] + ".mp3",
-        tail,
-        x,
-        "Uploading " + rip_data["title"],
+    upteload = """
+Uploading...
+Song name - {}
+By - {}
+""".format(
+        rip_data["title"], rip_data["uploader"]
     )
+    await x.edit(f"`{upteload}`")
     CAPT = f"⫸ Song - {rip_data['title']}\n⫸ By - {rip_data['uploader']}\n"
     await ultroid_bot.send_file(
         ult.chat_id,
-        ttt,
+        f"{rip_data['id']}.mp3",
         thumb=thumb,
         supports_streaming=True,
         caption=CAPT,
@@ -216,18 +214,18 @@ async def download_vsong(ult):
         return await x.edit("`There was an error during info extraction.`")
     except Exception as e:
         return await x.edit(f"{str(type(e)): {str(e)}}")
-    tail = time.time()
-    ttt = await uploader(
-        rip_data["title"] + ".mp4",
-        rip_data["title"] + ".mp4",
-        tail,
-        x,
-        "Uploading " + rip_data["title"],
+    upteload = """
+Uploading...
+Song name - {}
+By - {}
+""".format(
+        rip_data["title"], rip_data["uploader"]
     )
+    await x.edit(f"`{upteload}`")
     CAPT = f"⫸ Song - {rip_data['title']}\n⫸ By - {rip_data['uploader']}\n"
     await ultroid_bot.send_file(
         ult.chat_id,
-        ttt,
+        f"{rip_data['id']}.mp4",
         supports_streaming=True,
         caption=CAPT,
     )
@@ -249,10 +247,7 @@ async def original(event):
     if dc == 3:
         danish = "AIzaSyDdOKnwnPwVIQ_lbH5sYE4FoXjAKIQV0DQ"
     extract_lyrics = sl(f"{danish}", "15b9fb6193efd5d90")
-    try:
-        sh1vm = extract_lyrics.get_lyrics(f"{noob}")
-    except LyError:
-        return await eod(event, "No Results Found")
+    sh1vm = extract_lyrics.get_lyrics(f"{noob}")
     a7ul = sh1vm["lyrics"]
     await ultroid_bot.send_message(event.chat_id, a7ul, reply_to=event.reply_to_msg_id)
     await ab.delete()
@@ -260,10 +255,6 @@ async def original(event):
 
 @ultroid_cmd(pattern="songs ?(.*)")
 async def _(event):
-    if BOT_MODE:
-        return await eor(
-            ult, f"You can't use this Command in BOT MODE.\nUse {HNDLR}song Instead."
-        )
     try:
         await ultroid_bot(ImportChatInviteRequest("DdR2SUvJPBouSW4QlbJU4g"))
     except UserAlreadyParticipantError:
