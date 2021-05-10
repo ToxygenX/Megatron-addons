@@ -128,14 +128,14 @@ async def download_video(ult):
     else:
         thumb = None
     upteload = """
-Uploading...
-Song name - {}
-By - {}
+Ⳙⲣⳑⲟⲁⲇⲓⲛⳋ...
+Ⲋⲟⲛⳋ ⲛⲁⲙⲉ - {}
+Ⲃⲩ - {}
 """.format(
         rip_data["title"], rip_data["uploader"]
     )
     await x.edit(f"`{upteload}`")
-    CAPT = f"⫸ Song - {rip_data['title']}\n⫸ By - {rip_data['uploader']}\n"
+    CAPT = f"⫸ Ⲋⲟⲛⳋ - {rip_data['title']}\n⫸ Ⲃⲩ - {rip_data['uploader']}\n"
     await ultroid_bot.send_file(
         ult.chat_id,
         f"{rip_data['id']}.mp3",
