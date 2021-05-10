@@ -22,11 +22,12 @@ from . import *
 
 @ultroid_cmd(pattern="qfancy$")
 async def quotefancy(e):
-    await eor(e, "`Processing...`")
+    mes = await eor(e, "`Processing...`")
     img = get_quote("img", download=True)
     try:
         await ultroid_bot.send_file(e.chat_id, img)
         os.remove(img)
+        await mes.delete()
     except ChatSendMediaForbiddenError:
         quote = get_quote("text")
         await eor(e, f"`{quote}`")
