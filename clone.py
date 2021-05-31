@@ -12,7 +12,8 @@
 import html
 
 from telethon.tl.functions.account import UpdateProfileRequest
-from telethon.tl.functions.photos import DeletePhotosRequest, UploadProfilePhotoRequest
+from telethon.tl.functions.photos import (DeletePhotosRequest,
+                                          UploadProfilePhotoRequest)
 from telethon.tl.functions.users import GetFullUserRequest
 from telethon.tl.types import MessageEntityMentionName
 
