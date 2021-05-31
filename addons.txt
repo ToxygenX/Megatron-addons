@@ -1,3 +1,4 @@
+fonttools
 faker
 covid
 gtts
