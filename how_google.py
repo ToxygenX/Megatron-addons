@@ -26,4 +26,3 @@ async def _(e):
         await eod(e, "`Something is wrong. please try again later.`")
 
 
-HELP.update({f"{__name__.split('.')[1]}": f"{__doc__.format(i=HNDLR)}"})
