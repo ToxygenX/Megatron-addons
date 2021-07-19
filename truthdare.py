@@ -42,5 +42,3 @@ async def gtruth(ult):
     cm = bsc.find_all("h2")[0].text
     await m.edit(f"**#DareTask**\n\n`{cm}`")
 
-
-HELP.update({f"{__name__.split('.')[1]}": f"{__doc__.format(i=HNDLR)}"})
