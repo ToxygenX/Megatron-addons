@@ -53,4 +53,3 @@ async def encod(e):
         await eor(e, "**ⲈRRⲞR :** " + str(p))
 
 
-HELP.update({f"{__name__.split('.')[1]}": f"{__doc__.format(i=HNDLR)}"})
