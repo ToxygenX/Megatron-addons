@@ -49,5 +49,3 @@ async def _(event):
             print(e)
         await asyncio.sleep(0.05)
 
-
-HELP.update({f"{__name__.split('.')[1]}": f"{__doc__.format(i=HNDLR)}"})
