@@ -96,4 +96,3 @@ async def delayspammer(e):
         await e.respond(f"**Error :** `{u}`")
 
 
-HELP.update({f"{__name__.split('.')[1]}": f"{__doc__.format(i=HNDLR)}"})
