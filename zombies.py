@@ -1,12 +1,19 @@
-"""
-✘ Commands Available
+# Ultroid Userbot
+#
+# This file is a part of < https://github.com/TeamUltroid/Ultroid/ >
+# PLease read the GNU Affero General Public License in
+# <https://www.github.com/TeamUltroid/Ultroid/blob/main/LICENSE/>.
+
+
+"""✘ Commands Available
 • `{i}zombies`
     Gives the Number of Deleted Accounts.
 
 • `{i}zombies clean`
     Remove the deleted accounts if the user is admin.
 """
-from asyncio import sleep
+
+import asyncio
 
 from telethon.errors import ChatAdminRequiredError, UserAdminInvalidError
 from telethon.tl.functions.channels import EditBannedRequest
@@ -45,6 +52,7 @@ UNMUTE_RIGHTS = ChatBannedRights(until_date=None, send_messages=False)
 
 @ultroid_cmd(pattern="zombies ?(.*)")
 async def rm_deletedacc(show):
+    ultroid_bot = show.client
     con = show.pattern_match.group(1).lower()
     del_u = 0
     del_status = "`No deleted accounts found, Group is clean`"
@@ -55,13 +63,12 @@ async def rm_deletedacc(show):
                 del_u += 1
         if del_u > 0:
             del_status = f"`Found` {del_u} `ghost/deleted/zombie account(s) in this group,\
-            \nClean them by using` `zombies clean`"
+            \nClean them by using` `{HNDLR}zombies clean`"
         await eh.edit(del_status)
         return
     chat = await show.get_chat()
     admin = chat.admin_rights
     creator = chat.creator
-    # Well
     if not admin and not creator:
         await eor(show, "`I am not an admin here!`")
         return
@@ -100,8 +107,5 @@ async def rm_deletedacc(show):
         del_status = f"Cleaned **{del_u}** deleted account(s) \
         \n**{del_a}** deleted admin accounts are not removed"
     await ehh.edit(del_status)
-    await sleep(2)
+    await asyncio.sleep(2)
     await show.delete()
-
-
-HELP.update({f"{__name__.split('.')[1]}": f"{__doc__.format(i=HNDLR)}"})
