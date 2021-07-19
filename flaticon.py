@@ -39,4 +39,3 @@ async def www(e):
         await tt.edit("`No Results Found`")
 
 
-HELP.update({f"{__name__.split('.')[1]}": f"{__doc__.format(i=HNDLR)}"})
