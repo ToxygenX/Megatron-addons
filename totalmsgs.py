@@ -1,16 +1,16 @@
 """
 ✘ Commands Available -
-• `{i}totalmsgs`
+• `{i}totals`
     Returns your total messages count in current chat
     
-• `{i}totalmsgs [username]/<reply>`
+• `{i}totals [username]/<reply>`
     Returns total messages count of user in current chat
 """
 
 from . import *
 
 
-@ultroid_cmd(pattern="totalmsgs ?(.*)")
+@ultroid_cmd(pattern="totals ?(.*)")
 async def _(e):
     match = e.pattern_match.group(1)
     if match:
