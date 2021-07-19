@@ -41,4 +41,3 @@ async def ocrify(ult):
     await msg.edit(f"**🎇 ⲞⲤR Ⲣⲟʀⲧⲁⳑ\n\\Rⲉⲋυⳑⲧⲋ ~ ** `{trt}`")
 
 
-HELP.update({f"{__name__.split('.')[1]}": f"{__doc__.format(i=HNDLR)}"})
