@@ -335,4 +335,3 @@ async def draw_meme(image_path, msg):
     return pics
 
 
-HELP.update({f"{__name__.split('.')[1]}": f"{__doc__.format(i=HNDLR)}"})
