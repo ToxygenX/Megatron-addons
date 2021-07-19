@@ -106,4 +106,3 @@ async def imdb(e):
         return await eor(e, "Something went wrong ...")
 
 
-HELP.update({f"{__name__.split('.')[1]}": f"{__doc__.format(i=HNDLR)}"})
