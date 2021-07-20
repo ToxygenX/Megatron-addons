@@ -1,14 +1,14 @@
 fonttools
-faker
 covid
 gtts
-glitch_this
 pokedex.py
 pyshorteners
 pyfiglet
 pyjokes
-pygments
 quotefancy
 wikipedia
 textblob
 lyrics_extractor==3.0.1
+faker
+glitch_this
+pygments
