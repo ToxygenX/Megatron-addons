@@ -1,12 +1,3 @@
-#
-# Ultroid - UserBot
-#
-# This file is a part of < https://github.com/TeamUltroid/Ultroid/ >
-# PLease read the GNU Affero General Public License in
-# <https://www.github.com/TeamUltroid/Ultroid/blob/main/LICENSE/>.
-
-# Ported Plugin
-
 """
 ✘ Commands Available -
 
@@ -23,18 +14,20 @@
    `Stops AUTOBIO.`
 """
 
-from . import *
 import random
+
 from telethon.tl.functions.account import UpdateProfileRequest
+
+from . import *
 
 
 @ultroid_cmd(pattern="(auto|stop)name$")
 async def autoname_(event):
     match = event.pattern_match.group(1)
     if match == "stop":
-      udB.delete("AUTONAME")
-      await eor(event, "`AUTONAME has been Stopped !`")
-      return
+        udB.delete("AUTONAME")
+        await eor(event, "`AUTONAME has been Stopped !`")
+        return
     udB.set("AUTONAME", "True")
     await eod(event, "`Started AUTONAME`")
     while True:
@@ -44,28 +37,26 @@ async def autoname_(event):
         DM = time.strftime("%d-%m-%y")
         HM = time.strftime("%H:%M")
         name = f"🕒{HM} ⚡{OWNER_NAME}⚡ {DM} 🗓️"
-        await event.client(
-                UpdateProfileRequest( 
-                    first_name=name
-                )
-            )
-        await asyncio.sleep(1000)
+        await event.client(UpdateProfileRequest(first_name=name))
+        await asyncio.sleep(1111)
 
 
 @ultroid_cmd(pattern="(auto|stop)bio$")
 async def autoname_(event):
     match = event.pattern_match.group(1)
     if match == "stop":
-      udB.delete("AUTOBIO")
-      await eor(event, "`AUTOBIO has been Stopped !`")
-      return
+        udB.delete("AUTOBIO")
+        await eor(event, "`AUTOBIO has been Stopped !`")
+        return
     udB.set("AUTOBIO", "True")
-    await eod(event, "`Started AUTONAME`")
-    BIOS = ["Busy Today !",
-            "Enjoying Life!",
-            "Unique as Always!"
-            "Sprinkling a bit of magic",
-            "Intelligent !"]
+    await eod(event, "`Started AUTOBIO`")
+    BIOS = [
+        "Busy Today !",
+        "ULTROID USER",
+        "Enjoying Life!",
+        "Unique as Always!" "Sprinkling a bit of magic",
+        "Intelligent !",
+    ]
     while True:
         getn = udB.get("AUTOBIO")
         if not getn:
@@ -75,8 +66,8 @@ async def autoname_(event):
         HM = time.strftime("%H:%M")
         name = f"📅{DM} | {BIOMSG} | ⌚️{HM}"
         await event.client(
-                UpdateProfileRequest( 
-                    about=name,
-                )
+            UpdateProfileRequest(
+                about=name,
             )
-        await asyncio.sleep(1000)
+        )
+        await asyncio.sleep(1111)
