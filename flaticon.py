@@ -8,7 +8,6 @@
 
 import os
 import random
-import urllib
 
 import requests
 from bs4 import BeautifulSoup as bs
@@ -20,7 +19,7 @@ from . import *
 async def www(e):
     a = e.pattern_match.group(1)
     if not a:
-        return await eor(e, "Give some Text to Get Icon")
+        return await eor(e, "Give some Text to Get Icon from Flaticon.com")
     tt = await eor(e, "`Processing...`")
     query = a.replace(" ", "%20")
     try:
@@ -31,11 +30,10 @@ async def www(e):
             "img", src="https://media.flaticon.com/dist/min/img/loader.gif"
         )
         dome = results[random.randrange(0, len(results) - 1)]["data-src"]
-        urllib.request.urlretrieve(dome, "sticker.webp")
-        await ultroid_bot.send_file(e.chat.id, "sticker.webp")
+        await download_file(dome, "sticker.webp")
+        await e.reply(file="sticker.webp")
         os.remove("sticker.webp")
         await tt.delete()
-    except Exception:
+    except Exception as E:
+        LOGS.info(E)
         await tt.edit("`No Results Found`")
-
-
