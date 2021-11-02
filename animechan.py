@@ -1,10 +1,5 @@
-# Ultroid - UserBot
-#
-# This file is a part of < https://github.com/TeamUltroid/UltroidAddons/>
-
 """
-Fetch Random anime quotes from [AnimeChan](https://animechan.vercel.app)
-
+Fetch Random anime quotes
 Command : `{i}aniquote`
 """
 
@@ -22,4 +17,4 @@ async def _(ult):
         results += f" — __{resp['character']} ({resp['anime']})__"
         return await u.edit(results)
     except Exception:
-        await u.edit("`Something went wrong...`")
+        await u.edit("`Something went wrong LOL ...`")
