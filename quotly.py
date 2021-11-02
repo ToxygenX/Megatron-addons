@@ -27,12 +27,12 @@ async def _(event):
     reply_message.sender
     ac = await eor(event, "```Making a Quote```")
     col = event.pattern_match.group(2)
-    async with ultroid_bot.conversation(chat) as conv:
+    async with event.client.conversation(chat) as conv:
         try:
             response = conv.wait_event(
                 events.NewMessage(incoming=True, from_users=1031952739)
             )
-            er = await ultroid_bot.forward_messages(chat, reply_message)
+            er = await event.client.forward_messages(chat, reply_message)
             if not len(col) == 0:  # Bad way
                 await asyncio.sleep(3)
                 await er.reply(f"/q {col}")
@@ -44,7 +44,7 @@ async def _(event):
             await eor(event, ERR)
         else:
             await ac.delete()
-            await ultroid_bot.send_message(event.chat_id, response.message)
+            await event.client.send_message(event.chat_id, response.message)
 
 
 # Oringinal Source from Nicegrill: https://github.com/erenmetesar/NiceGrill/
@@ -77,18 +77,18 @@ COLORS = [
 async def process(msg, user, client, reply, replied=None):
     # Importıng fonts and gettings the size of text
     font = ImageFont.truetype(
-        "resources/fonts/7.ttf", 43, encoding="utf-16"
+        "resources/fonts/Roboto-Medium.ttf", 43, encoding="utf-16"
     )
     font2 = ImageFont.truetype(
-        "resources/fonts/8.ttf", 33, encoding="utf-16"
+        "resources/fonts/Roboto-Regular.ttf", 33, encoding="utf-16"
     )
     mono = ImageFont.truetype(
-        "resources/fonts/9.ttf", 30, encoding="utf-16"
+        "resources/fonts/DroidSansMono.ttf", 30, encoding="utf-16"
     )
     italic = ImageFont.truetype(
-        "resources/fonts/11.otf", 33, encoding="utf-16"
+        "resources/fonts/Roboto-Italic.ttf", 33, encoding="utf-16"
     )
-    fallback = ImageFont.truetype("resources/fonts/13.otf", 43, encoding="utf-16")
+    fallback = ImageFont.truetype("resources/fonts/Quivira.otf", 43, encoding="utf-16")
 
     # Splitting text
     maxlength = 0
@@ -263,7 +263,7 @@ async def process(msg, user, client, reply, replied=None):
     # Writing User's Name
     space = pfpbg.width + 30
     namefallback = ImageFont.truetype(
-        "resources/fonts/13.otf", 43, encoding="utf-16"
+        "resources/fonts/Quivira.otf", 43, encoding="utf-16"
     )
     for letter in tot:
         if letter in emoji.UNICODE_EMOJI:
@@ -289,7 +289,7 @@ async def process(msg, user, client, reply, replied=None):
     index = 0
     emojicount = 0
     textfallback = ImageFont.truetype(
-        "resources/fonts/13.otf", 33, encoding="utf-16"
+        "resources/fonts/Quivira.otf", 33, encoding="utf-16"
     )
     textcolor = "white"
     for line in text:
@@ -300,25 +300,25 @@ async def process(msg, user, client, reply, replied=None):
             for offset, length in bold.items():
                 if index in range(offset, length):
                     font2 = ImageFont.truetype(
-                        "resources/fonts/7.ttf", 33, encoding="utf-16"
+                        "resources/fonts/Roboto-Medium.ttf", 33, encoding="utf-16"
                     )
                     textcolor = "white"
             for offset, length in italic.items():
                 if index in range(offset, length):
                     font2 = ImageFont.truetype(
-                        "resources/fonts/8.ttf", 33, encoding="utf-16"
+                        "resources/fonts/Roboto-Italic.ttf", 33, encoding="utf-16"
                     )
                     textcolor = "white"
             for offset, length in mono.items():
                 if index in range(offset, length):
                     font2 = ImageFont.truetype(
-                        "resources/fonts/9.ttf", 30, encoding="utf-16"
+                        "resources/fonts/DroidSansMono.ttf", 30, encoding="utf-16"
                     )
                     textcolor = "white"
             for offset, length in link.items():
                 if index in range(offset, length):
                     font2 = ImageFont.truetype(
-                        "resources/fonts/11.otf", 30, encoding="utf-16"
+                        "resources/fonts/Roboto-Regular.ttf", 30, encoding="utf-16"
                     )
                     textcolor = "#898989"
             if letter in emoji.UNICODE_EMOJI:
@@ -357,7 +357,7 @@ async def drawer(width, height):
 
 
 async def fontTest(letter):
-    test = TTFont("resources/fonts/9.ttf")
+    test = TTFont("resources/fonts/Roboto-Medium.ttf")
     for table in test["cmap"].tables:
         if ord(letter) in table.cmap.keys():
             return True
@@ -387,7 +387,7 @@ async def get_entity(msg):
 
 
 async def doctype(name, size, type, canvas):
-    font = ImageFont.truetype("resources/fonts/7.ttf", 38)
+    font = ImageFont.truetype("resources/fonts/Roboto-Medium.ttf", 38)
     doc = Image.new("RGBA", (130, 130), (29, 29, 29, 255))
     draw = ImageDraw.Draw(doc)
     draw.ellipse((0, 0, 130, 130), fill="#434343")
@@ -407,7 +407,7 @@ async def no_photo(reply, tot):
     color = random.choice(COLORS)
     pen.ellipse((0, 0, 105, 105), fill=color)
     letter = "" if not tot else tot[0]
-    font = ImageFont.truetype("resources/fonts/8.ttf", 60)
+    font = ImageFont.truetype("resources/fonts/Roboto-Regular.ttf", 60)
     pen.text((32, 17), letter, font=font, fill="white")
     return pfp, color
 
@@ -444,10 +444,10 @@ async def transparent(emoji):
 
 
 async def replied_user(draw, tot, text, maxlength, title):
-    namefont = ImageFont.truetype("resources/fonts/7.ttf", 38)
-    namefallback = ImageFont.truetype("resources/fonts/8.ttf", 38)
-    textfont = ImageFont.truetype("resources/fonts/9.ttf", 32)
-    textfallback = ImageFont.truetype("resources/fonts/11.otf", 38)
+    namefont = ImageFont.truetype("resources/fonts/Roboto-Medium.ttf", 38)
+    namefallback = ImageFont.truetype("resources/fonts/Quivira.otf", 38)
+    textfont = ImageFont.truetype("resources/fonts/Roboto-Regular.ttf", 32)
+    textfallback = ImageFont.truetype("resources/fonts/Roboto-Medium.ttf", 38)
     maxlength = maxlength + 7 if maxlength < 10 else maxlength
     text = text[: maxlength - 2] + ".." if len(text) > maxlength else text
     draw.line((165, 90, 165, 170), width=5, fill="white")
@@ -474,11 +474,7 @@ async def _(event):
     reply = await event.get_reply_message()
     msg = reply.message
     repliedreply = await reply.get_reply_message()
-    user = (
-        await event.client.get_entity(reply.forward.sender)
-        if reply.fwd_from
-        else reply.sender
-    )
+    user = await reply.get_sender()
     res, canvas = await process(msg, user, event.client, reply, repliedreply)
     if not res:
         return
@@ -487,5 +483,3 @@ async def _(event):
         event.chat_id, "sticker.webp", reply_to=event.reply_to_msg_id
     )
     os.remove("sticker.webp")
-
-
