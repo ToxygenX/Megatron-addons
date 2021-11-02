@@ -1,15 +1,3 @@
-#    Ultroid - UserBot
-#    Copyright 2020 (c)
-
-# For song and vsong
-#    Thanks to @AvinashReddy for the ytdl base and @xditya
-# Lyrics ported from Dark Cobra
-#
-# This file is a part of < https://github.com/TeamUltroid/Ultroid/ >
-# PLease read the GNU Affero General Public License in
-# <https://www.github.com/TeamUltroid/Ultroid/blob/main/LICENSE/>.
-
-
 """
 ✘ Commands Available -
 • `{i}song <search query>`
@@ -31,6 +19,7 @@ import os
 import random
 
 from lyrics_extractor import SongLyrics as sl
+from lyrics_extractor.lyrics import LyricScraperException as LyError
 from telethon.errors.rpcerrorlist import UserAlreadyParticipantError
 from telethon.tl.functions.messages import ImportChatInviteRequest
 from telethon.tl.types import DocumentAttributeAudio
@@ -247,14 +236,19 @@ async def original(event):
     if dc == 3:
         danish = "AIzaSyDdOKnwnPwVIQ_lbH5sYE4FoXjAKIQV0DQ"
     extract_lyrics = sl(f"{danish}", "15b9fb6193efd5d90")
-    sh1vm = extract_lyrics.get_lyrics(f"{noob}")
+    try:
+        sh1vm = extract_lyrics.get_lyrics(f"{noob}")
+    except LyError:
+        return await eod(event, "No Results Found")
     a7ul = sh1vm["lyrics"]
-    await ultroid_bot.send_message(event.chat_id, a7ul, reply_to=event.reply_to_msg_id)
+    await event.client.send_message(event.chat_id, a7ul, reply_to=event.reply_to_msg_id)
     await ab.delete()
+
 
 
 @ultroid_cmd(pattern="songs ?(.*)")
 async def _(event):
+    ultroid_bot = event.client
     try:
         await ultroid_bot(ImportChatInviteRequest("DdR2SUvJPBouSW4QlbJU4g"))
     except UserAlreadyParticipantError:
@@ -279,6 +273,6 @@ async def _(event):
             await ultroid_bot.send_file(current_chat, event, caption=event.message)
         await okla.delete()
     except Exception:
-        return await eor(event, "`Song not found.`")
+        return await eor(okla, "`Song not found.`")
 
 
