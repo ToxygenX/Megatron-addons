@@ -1,23 +1,13 @@
-# Ported Nd Modified For Ultroid
-# Ported From DarkCobra (Modified by @ProgrammingError)
-#
-# Ultroid - UserBot
-# Copyright (C) 2020 TeamUltroid
-#
-# This file is a part of < https://github.com/TeamUltroid/Ultroid/ >
-# PLease read the GNU Affero General Public License in
-# <https://www.github.com/TeamUltroid/Ultroid/blob/main/LICENSE/>.
-
 """
 ✘ Commands Available -
 
 • `{i}mmf <upper text> ; <lower text> <reply to media>`
     To create memes as sticker,
-    for tyring different fonts use (.mmf <text>_0)(u can use 0 to 10).
+    for trying different fonts use (.mmf <text>_1)(u can use 1 to 10).
 
 • `{i}mms <upper text> ; <lower text> <reply to media>`
     To create memes as pic,
-    for tyring different fonts use (.mms <text>_0)(u can use 0 to 10).
+    for trying different fonts use (.mms <text>_1)(u can use 1 to 10).
 
 """
 
@@ -64,7 +54,7 @@ async def ultd(event):
         cv2.imwrite("ult.png", lol)
         file = "ult.png"
     stick = await draw_meme_text(file, msg)
-    await ultroid_bot.send_file(
+    await event.client.send_file(
         event.chat_id, stick, force_document=False, reply_to=event.reply_to_msg_id
     )
     await xx.delete()
@@ -333,5 +323,3 @@ async def draw_meme(image_path, msg):
     pics = "ultt.png"
     img.save(pics, "png")
     return pics
-
-
