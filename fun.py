@@ -5,7 +5,7 @@
     To get joke.
 
 • `{i}insult`
-    Insult someone.
+    Insult someone..
 
 • `{i}url <long url>`
     To get a shorten link of long link.
@@ -23,11 +23,12 @@
     Shows the desired place in the map.
 
 """
+
 import random
+
 import requests
 from bs4 import BeautifulSoup as bs
 from pyjokes import get_joke
-
 from telethon.errors import ChatSendMediaForbiddenError
 
 from . import *
@@ -59,7 +60,7 @@ async def _(event):
     if response_api:
         await eor(
             event,
-            "Shortened url==> {} for the given url==> {}.".format(
+            "**Shortened url**==> {}\n**Given url**==> {}.".format(
                 response_api, input_str
             ),
         )
@@ -69,15 +70,10 @@ async def _(event):
 
 @ultroid_cmd(pattern="decide$")
 async def _(event):
-    hm = await eor(event, "`Deciding...`")
-    message_id = event.message.id
-    if event.reply_to_msg_id:
-        message_id = event.reply_to_msg_id
+    hm = await eor(event, "`Deciding`")
     r = requests.get("https://yesno.wtf/api").json()
     try:
-        await ultroid_bot.send_message(
-            event.chat_id, r["answer"], reply_to=message_id, file=r["image"]
-        )
+        await event.reply(r["answer"], file=r["image"])
         await hm.delete()
     except ChatSendMediaForbiddenError:
         await eor(event, r["answer"])
@@ -85,18 +81,18 @@ async def _(event):
 
 @ultroid_cmd(pattern="xo$")
 async def xo(ult):
-    xox = await ultroid_bot.inline_query("xobot", "play")
+    xox = await ult.client.inline_query("xobot", "play")
     await xox[random.randrange(0, len(xox) - 1)].click(
-        ult.chat.id, reply_to=ult.reply_to_msg_id, silent=True, hide_via=True
+        ult.chat_id, reply_to=ult.reply_to_msg_id, silent=True, hide_via=True
     )
     await ult.delete()
 
 
 @ultroid_cmd(pattern="wordi$")
 async def word(ult):
-    game = await ultroid_bot.inline_query("wordibot", "play")
+    game = await ult.client.inline_query("wordibot", "play")
     await game[0].click(
-        ult.chat.id, reply_to=ult.reply_to_msg_id, silent=True, hide_via=True
+        ult.chat_id, reply_to=ult.reply_to_msg_id, silent=True, hide_via=True
     )
     await ult.delete()
 
@@ -106,8 +102,8 @@ async def map(ult):
     get = ult.pattern_match.group(1)
     if not get:
         return await eor(ult, "Use this command as `.gps <query>`")
-    gps = await ultroid_bot.inline_query("openmap_bot", f"{get}")
+    gps = await ult.client.inline_query("openmap_bot", f"{get}")
     await gps[0].click(
-        ult.chat.id, reply_to=ult.reply_to_msg_id, silent=True, hide_via=True
+        ult.chat_id, reply_to=ult.reply_to_msg_id, silent=True, hide_via=True
     )
     await ult.delete()
