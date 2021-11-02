@@ -1,30 +1,25 @@
-#
-# Ultroid - UserBot
-#
-# This file is a part of < https://github.com/TeamUltroid/Ultroid/ >
-# PLease read the GNU Affero General Public License in
-# <https://www.github.com/TeamUltroid/Ultroid/blob/main/LICENSE/>.
-#
-# Ported from Telebot
-
-
 """
 ✘ Commands Available -
 
-• {i}tts LanguageCode <reply to a message>
-• {i}tts LangaugeCode | text to speak
+• `{i}tts` `LanguageCode <reply to a message>`
+• `{i}tts` `LangaugeCode | text to speak`
 
+• `{i}stt` `<reply to audio file>`
+  `Convert Speech to Text...`
+  `Note - Sometimes Not 100% Accurate`
 """
-
 
 import asyncio
 import os
 import subprocess
 from datetime import datetime
 
+import speech_recognition as sr
 from gtts import gTTS
 
 from . import *
+
+reco = sr.Recognizer()
 
 
 @ultroid_cmd(
@@ -40,7 +35,7 @@ async def _(event):
     elif "|" in input_str:
         lan, text = input_str.split("|")
     else:
-        await eor(event, "Invalid Syntax. Module stopping...")
+        await eor(event, "Invalid Syntax. Module stopping.")
         return
     text = text.strip()
     lan = lan.strip()
@@ -73,18 +68,31 @@ async def _(event):
             required_file_name = required_file_name + ".opus"
         end = datetime.now()
         ms = (end - start).seconds
-        await ultroid_bot.send_file(
-            event.chat_id,
-            required_file_name,
-            reply_to=event.message.reply_to_msg_id,
-            allow_cache=False,
-            voice_note=True,
+        await event.reply(
+            file=required_file_name,
         )
         os.remove(required_file_name)
-        await eor(event, "Processed {} ({}) in {} seconds!".format(text[0:97], lan, ms))
-        await asyncio.sleep(5)
-        await event.delete()
+        await eod(event, "Processed {} ({}) in {} seconds!".format(text[0:97], lan, ms))
     except Exception as e:
         await eor(event, str(e))
 
 
+@ultroid_cmd(pattern="stt")
+async def speec_(e):
+    reply = await e.get_reply_message()
+    if not (reply and reply.media):
+        return await eod(e, "`Reply to Audio-File..`")
+    # Not Hard Checking File Types
+    re = await reply.download_media()
+    fn = re + ".wav"
+    await bash(f'ffmpeg -i "{re}" -vn "{fn}"')
+    with sr.AudioFile(fn) as source:
+        audio = reco.record(source)
+    try:
+        text = reco.recognize_google(audio, language="en-IN")
+    except Exception as er:
+        return await eor(e, str(er))
+    out = "**Extracted Text :**\n `" + text + "`"
+    await eor(e, out)
+    os.remove(fn)
+    os.remove(re)
