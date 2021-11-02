@@ -1,18 +1,11 @@
-#
-# Ultroid - UserBot
-#
-# This file is a part of < https://github.com/TeamUltroid/Ultroid/ >
-# PLease read the GNU Affero General Public License in
-# <https://www.github.com/TeamUltroid/Ultroid/blob/main/LICENSE/>.
-# .tweet made for ultroid
-
-# .uta ported from Dark-Cobra
-
 """
 ✘ Commands Available -
 
 • `{i}uta <search query>`
     Inline song search and downloader.
+
+• `{i}gglax <query>`
+    Create google search sticker with text.
 
 • `{i}stic <emoji>`
     Get random stickers from emoji.
@@ -22,13 +15,16 @@
 
 • `{i}tweet <text>`
     make twitter posts.
+
+• `{i}quot <text>`
+    write quote on animated sticker.
 """
 
-import random
+from random import choice
+
+from telethon.errors import ChatSendInlineForbiddenError
 
 from plugins.stickertools import deEmojify
-from telethon.errors import (ChatSendInlineForbiddenError,
-                             ChatSendStickersForbiddenError)
 
 from . import *
 
@@ -37,20 +33,15 @@ from . import *
 async def tweet(e):
     wai = await eor(e, "`Processing...`")
     text = e.pattern_match.group(1)
-    if text is None:
+    if not text:
         return await wai.edit("`Give me Some Text !`")
     try:
         results = await e.client.inline_query("twitterstatusbot", text)
-        await results[0].click(
-            e.chat_id,
-            silent=True,
-            hide_via=True,
-        )
+        await e.reply("New Tweet", file=results[0].document)
         await wai.delete()
-    except ChatSendStickersForbiddenError:
-        await wai.edit("Sorry boss, I can't send Sticker Here !!")
     except Exception as m:
         await eor(e, str(m))
+
 
 @ultroid_cmd(pattern="stic ?(.*)")
 async def tweet(e):
@@ -58,19 +49,26 @@ async def tweet(e):
         return
     wai = await eor(e, "`Processing...`")
     text = e.pattern_match.group(1)
-    if text is None:
+    if not text:
         return await wai.edit("`Give me Some Emoji !`")
+    results = await e.client.inline_query("sticker", text)
+    num = choice(results)
+    await e.reply("@sticker", file=num.document)
+    await wai.delete()
+
+
+@ultroid_cmd(pattern="gglax ?(.*)")
+async def gglax_sticker(e):
+    wai = await eor(e, "`Processing...`")
+    text = e.pattern_match.group(1)
+    if not text:
+        return await wai.edit("`Give me Some Text !`")
     try:
-        results = await e.client.inline_query("sticker", text)
-        num = random.randrange(0, len(results) -1)
-        await results[num].click(
-            e.chat_id,
-            silent=True,
-            hide_via=True,
-        )
+        results = await e.client.inline_query("googlaxbot", text)
+        await e.reply("Googlax", file=results[0].document)
         await wai.delete()
-    except ChatSendStickersForbiddenError:
-        await wai.edit("Sorry boss, I can't send Sticker Here !!")
+    except Exception as m:
+        await eor(e, str(m))
 
 
 @ultroid_cmd(pattern="frog ?(.*)")
@@ -79,52 +77,51 @@ async def honkasays(e):
     text = e.pattern_match.group(1)
     if not text:
         return await wai.edit("`Give Me Some Text !`")
+    text = deEmojify(text)
+    if not text.endswith("."):
+        text += "."
+    if len(text) <= 9:
+        q = 2
+    elif len(text) >= 14:
+        q = 0
+    else:
+        q = 1
     try:
-        if not text.endswith("."):
-            text = text + "."
-        if len(text) <= 9:
-            results = await e.client.inline_query("honka_says_bot", text)
-            await results[2].click(
-                e.chat_id,
-                silent=True,
-                hide_via=True,
-            )
-        elif len(text) >= 14:
-            results = await e.client.inline_query("honka_says_bot", text)
-            await results[0].click(
-                e.chat_id,
-                silent=True,
-                hide_via=True,
-            )
-        else:
-            results = await e.client.inline_query("honka_says_bot", text)
-            await results[1].click(
-                e.chat_id,
-                silent=True,
-                hide_via=True,
-            )
+        res = await e.client.inline_query("honka_says_bot", text)
+        await e.reply("Honka", file=res[q].document)
         await wai.delete()
-    except ChatSendStickersForbiddenError:
-        await wai.edit("Sorry boss, I can't send Sticker Here !!")
+    except Exception as er:
+        await wai.edit(str(er))
 
 
 @ultroid_cmd(pattern="uta ?(.*)")
 async def nope(doit):
     ok = doit.pattern_match.group(1)
+    replied = await doit.get_reply_message()
     a = await eor(doit, "`Processing...`")
-    if not ok:
-        if doit.is_reply:
-            (await doit.get_reply_message()).message
-        else:
-            return await eor(
-                doit,
-                "`Sir please give some query to search and download it for you..!`",
-            )
-    sticcers = await doit.client.inline_query("Lybot", f"{(deEmojify(ok))}")
-    await sticcers[0].click(
-            doit.chat_id,
-            reply_to=doit.reply_to_msg_id,
-            silent=True if doit.is_reply else False,
-            hide_via=True,
+    if ok:
+        pass
+    elif replied and replied.message:
+        ok = replied.message
+    else:
+        return await eor(
+            doit,
+            "`Sir please give some query to search and download it for you..!`",
         )
+    sticcers = await doit.client.inline_query("Lybot", f"{(deEmojify(ok))}")
+    await doit.reply(file=sticcers[0].document)
     await a.delete()
+
+
+@ultroid_cmd(pattern="quot ?(.*)")
+async def quote_(event):
+    IFUZI = event.pattern_match.group(1)
+    if not IFUZI:
+        return await eor(event, "`Give some text to make Quote..`")
+    EI_IR = await eor(event, "`Processing...`")
+    try:
+        RE_ZK = await event.client.inline_query("@QuotAfBot", IFUZI)
+        await event.reply(file=choice(RE_ZK).document)
+    except Exception as U_TG:
+        return await eor(EI_IR, str(U_TG))
+    await EI_IR.delete()
