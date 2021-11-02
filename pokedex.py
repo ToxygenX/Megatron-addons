@@ -1,11 +1,3 @@
-# Creator - @THE_BL_ACK_HAT @Shivam_Patel
-#
-# Ultroid - UserBot
-#
-# This file is a part of < https://github.com/TeamUltroid/Ultroid/ >
-# PLease read the GNU Affero General Public License in
-# <https://www.github.com/TeamUltroid/Ultroid/blob/main/LICENSE/>.
-
 """
 ✘ Commands Available -
 
@@ -17,7 +9,6 @@
 """
 
 import requests
-
 from pokedex import pokedex as badhiya
 
 from . import *
@@ -25,7 +16,7 @@ from . import *
 
 @ultroid_cmd(pattern="pokemon ?(.*)")
 async def pokedex(event):
-    pokemon = event.pattern_match.group(1)
+    pokemon = event.pattern_match.group(1).lower()
     if not pokemon:
         await eor(event, "`Give a Pokemon Name`")
         return
@@ -118,13 +109,13 @@ async def pokedex(event):
 **Total**   : `{Stats['total']}`            `(7){move7}`
 **DESCRIPTION** : `{description}`
   """
-    await ultroid_bot.send_file(event.chat_id, lst, caption=cap)
+    await event.client.send_file(event.chat_id, lst, caption=cap)
     await xx.delete()
 
 
 @ultroid_cmd(pattern="pokecard ?(.*)")
 async def pokecard(event):
-    pokename = event.pattern_match.group(1)
+    pokename = event.pattern_match.group(1).lower()
     if not pokename:
         await eor(event, "`Give A Pokemon name`")
         return
@@ -140,5 +131,3 @@ async def pokecard(event):
     except BaseException:
         await eor(event, "`Be sure To give correct Name`")
         return
-
-
