@@ -49,12 +49,11 @@ async def download_video(ult):
     url = ult.pattern_match.group(1)
     if not url:
         return await x.edit("**Error**\nUsage - `.song <song name>`")
-    search = VideosSearch(url, offset=1, mode="json", max_results=1)
-    test = search.result()
-    p = json.loads(test)
-    q = p.get("search_result")
-    try:
-        url = q[0]["link"]
+    search = VideosSearch(url, limit=1)
+    x = search.result()
+    m = x["result"]
+    for i in m:
+        url = i["link"]
     except BaseException:
         return await x.edit("`No matching song found...`")
     type = "audio"
@@ -153,12 +152,11 @@ async def download_vsong(ult):
     url = ult.pattern_match.group(1)
     if not url:
         return await x.edit("**Error**\nUsage - `.vsong <song name>`")
-    search = SearchVideos(url, offset=1, mode="json", max_results=1)
-    test = search.result()
-    p = json.loads(test)
-    q = p.get("search_result")
-    try:
-        url = q[0]["link"]
+    search = VideosSearch(url, limit=1)
+    x = search.result()
+    m = x["result"]
+    for i in m:
+        url = i["link"]
     except BaseException:
         return await x.edit("`No matching songs found...`")
     type = "audio"
