@@ -123,7 +123,7 @@ async def download_video(ult):
     )
     await x.edit(f"`{upteload}`")
     CAPT = f"⫸ Ⲋⲟⲛⳋ - {rip_data['title']}\n⫸ Ⲃⲩ - {rip_data['uploader']}\n"
-    await ultroid_bot.send_file(
+    await event.client.send_file(
         ult.chat_id,
         f"{rip_data['id']}.mp3",
         thumb=thumb,
@@ -208,7 +208,7 @@ By - {}
     )
     await x.edit(f"`{upteload}`")
     CAPT = f"⫸ Song - {rip_data['title']}\n⫸ By - {rip_data['uploader']}\n"
-    await ultroid_bot.send_file(
+    await event.client.send_file(
         ult.chat_id,
         f"{rip_data['id']}.mp4",
         supports_streaming=True,
@@ -266,7 +266,7 @@ async def _(event):
         async for event in ultroid_bot.iter_messages(
             chat, search=args, limit=1, filter=filtermus
         ):
-            await ultroid_bot.send_file(current_chat, event, caption=event.message)
+            await event.client.send_file(current_chat, event, caption=event.message)
         await okla.delete()
     except Exception:
         return await eor(okla, "`Song not found.`")
