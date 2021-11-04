@@ -50,15 +50,13 @@ async def download_video(ult):
     if not url:
         return await x.edit("**Error**\nUsage - `.song <song name>`")
     try: 
-        search = VideosSearch(url, limit=1)
-        x = search.result()
-        m = x["result"]
-        for i in m:
-            url = i["link"]
+        search = VideosSearch(url, limit=1).result()
+        data = search["result"][0]
+        url = data["link"]
     except BaseException:
         return await x.edit("`No matching song found...`")
     type = "audio"
-    #await x.edit(f"`Preparing to download {str(url)}...`")
+    await x.edit(f"`Preparing to download {url}...`")
     if type == "audio":
         opts = {
             "format": "bestaudio",
@@ -154,15 +152,13 @@ async def download_vsong(ult):
     if not url:
         return await x.edit("**Error**\nUsage - `.vsong <song name>`")
     try:
-        search = VideosSearch(url, limit=1)
-        x = search.result()
-        m = x["result"]
-        for i in m:
-            url = i["link"]
+        search = VideosSearch(url, limit=1).result()
+        data = search["result"][0]
+        url = data["link"]
     except BaseException:
         return await x.edit("`No matching songs found...`")
     type = "audio"
-    #await x.edit("`Preparing to download...`")
+    await x.edit(f"`Preparing to download {url}...`")
     if type == "audio":
         opts = {
             "format": "best",
