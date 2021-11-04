@@ -123,7 +123,7 @@ async def download_video(ult):
     )
     await x.edit(f"`{upteload}`")
     CAPT = f"⫸ Ⲋⲟⲛⳋ - {rip_data['title']}\n⫸ Ⲃⲩ - {rip_data['uploader']}\n"
-    await event.client.send_file(
+    await ult.client.send_file(
         ult.chat_id,
         f"{rip_data['id']}.mp3",
         thumb=thumb,
@@ -208,7 +208,7 @@ By - {}
     )
     await x.edit(f"`{upteload}`")
     CAPT = f"⫸ Song - {rip_data['title']}\n⫸ By - {rip_data['uploader']}\n"
-    await event.client.send_file(
+    await ult.client.send_file(
         ult.chat_id,
         f"{rip_data['id']}.mp4",
         supports_streaming=True,
