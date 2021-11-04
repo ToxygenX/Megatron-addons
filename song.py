@@ -58,7 +58,7 @@ async def download_video(ult):
     except BaseException:
         return await x.edit("`No matching song found...`")
     type = "audio"
-    await x.edit(f"`Preparing to download {str(url)}...`")
+    #await x.edit(f"`Preparing to download {str(url)}...`")
     if type == "audio":
         opts = {
             "format": "bestaudio",
@@ -162,7 +162,7 @@ async def download_vsong(ult):
     except BaseException:
         return await x.edit("`No matching songs found...`")
     type = "audio"
-    await x.edit("`Preparing to download...`")
+    #await x.edit("`Preparing to download...`")
     if type == "audio":
         opts = {
             "format": "best",
