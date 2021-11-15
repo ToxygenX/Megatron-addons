@@ -9,7 +9,12 @@
 
 • `{i}rbf`
     Brainfuck Interpreter with string or reply.
+
+• `{i}morse`
+    Morse code Generator and Interpretor
 """
+
+from bidict import bidict 
 
 from . import *
 
@@ -192,3 +197,113 @@ async def _(event):
         else:
             return await eod(event, "Give me some text lol", time=5)
     await eor(event, f"{evaluate(input_)}")
+
+
+morse_dict = bidict({'A' : '.-',
+                     'B' : '-...',
+                     'C' : '-.-.',
+                     'D' : '-..',
+                     'E' : '.',
+                     'F' : '..-.',
+                     'G' : '--.',
+                     'H' : '....',
+                     'I' : '..',
+                     'J' : '.---',
+                     'K' : '-.-',
+                     'L' : '.-..',
+                     'M' : '--',
+                     'N' : '-.',
+                     'O' : '---',
+                     'P' : '.--.',
+                     'Q' : '--.-',
+                     'R' : '.-.',
+                     'S' : '...',
+                     'T' : '-',
+                     'U' : '..-',
+                     'V' : '...-',
+                     'W' : '.--',
+                     'X' : '-..-',
+                     'Y' : '-.--',
+                     'Z' : '--..',
+                     'Ö' : '---.',
+                     'ß' : '...--..',
+                     'Ü' : '..--',
+                     'Ä' : '.-.-',
+                     'CH': '----',
+                     '.' : '.-.-.-',
+                     ':' : '---...',
+                     ',' : '--..--',
+                     ';' : '-.-.-.',
+                     '?' : '..--..',
+                     '!' : '-.-.--',
+                     '-' : '-....-',
+                     '_' : '..--.-',
+                     '(' : '-.--.',
+                     ')' : '-.--.-',
+                     '=' : '-...-',
+                     '+' : '.-.-.',
+                     '/' : '-..-.',
+                     '@' : '.--.-.',
+                     ' ' : ' /',
+                     '1' : '.----',
+                     '2' : '..---',
+                     '3' : '...--',
+                     '4' : '....-',
+                     '5' : '.....',
+                     '6' : '-....',
+                     '7' : '--...',
+                     '8' : '---..',
+                     '9' : '----.',
+                     '0' : '-----',
+                     'SOS' : '...---...',
+                     })
+
+
+def toMorse(text):
+    for x in text:
+        if(x != '-' and x != '.' and x != ' ' and x != '/'):
+            return True 
+    return False 
+
+
+def decrypt(text):
+    text = text.split()
+    tilak = ""
+    for x in text:
+        if(x == '/'):
+            tilak += ' '
+        elif(x in morse_dict.inverse):
+            tilak += morse_dict.inverse[x]
+        else:
+            tilak += 'UNKOWN' + '0'
+    return tilak
+
+
+def encrypt(text):
+    tilak = ""
+    for x in text:
+        if(x in morse_dict):
+            tilak += morse_dict[x] + ' '
+        else:
+            tilak += 'UNKNOWN' + ' '
+    return tilak
+
+
+@ultroid_cmd(
+    pattern=".morse", 
+)
+async def morsey(event):
+    input_ = event.text[4:]
+    if not input_:
+        if event.reply_to_msg_id:
+            previous_message = await event.get_reply_message()
+            input_ = previous_message.message
+        else:
+            return await eod(event, "Give me some text lol", time=5)
+    tilak = ""
+    if(toMorse(input_.upper())):
+        tilak =  encrypt(input_.upper())
+    else:
+        tilak = decrypt(input_.upper())
+    await eor(event, tilak)
+  
