@@ -290,7 +290,7 @@ def encrypt(text):
 
 
 @ultroid_cmd(
-    pattern=".morse", 
+    pattern="morse", 
 )
 async def morsey(event):
     input_ = event.text[4:]
