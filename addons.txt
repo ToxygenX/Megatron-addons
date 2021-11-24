@@ -1,6 +1,7 @@
 fonttools
 covid
 gtts
+faker
 pokedex.py
 pyshorteners
 pyfiglet
