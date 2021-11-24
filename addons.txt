@@ -1,5 +1,6 @@
 fonttools
 covid
+bdict
 gtts
 faker
 pokedex.py
