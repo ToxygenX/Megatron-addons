@@ -11,10 +11,11 @@
     Brainfuck Interpreter with string or reply.
 
 • `{i}morse`
-    Morse code Generator and Interpretor
-"""
+    Text to Morse Code String Generator with text or reply.
 
-from bidict import bidict 
+• `{i}rmorse`
+    Morse Code Interpreter with string or reply.
+"""
 
 from . import *
 
@@ -199,100 +200,70 @@ async def _(event):
     await eor(event, f"{evaluate(input_)}")
 
 
-morse_dict = bidict({'A' : '.-',
-                     'B' : '-...',
-                     'C' : '-.-.',
-                     'D' : '-..',
-                     'E' : '.',
-                     'F' : '..-.',
-                     'G' : '--.',
-                     'H' : '....',
-                     'I' : '..',
-                     'J' : '.---',
-                     'K' : '-.-',
-                     'L' : '.-..',
-                     'M' : '--',
-                     'N' : '-.',
-                     'O' : '---',
-                     'P' : '.--.',
-                     'Q' : '--.-',
-                     'R' : '.-.',
-                     'S' : '...',
-                     'T' : '-',
-                     'U' : '..-',
-                     'V' : '...-',
-                     'W' : '.--',
-                     'X' : '-..-',
-                     'Y' : '-.--',
-                     'Z' : '--..',
-                     'Ö' : '---.',
-                     'ß' : '...--..',
-                     'Ü' : '..--',
-                     'Ä' : '.-.-',
-                     'CH': '----',
-                     '.' : '.-.-.-',
-                     ':' : '---...',
-                     ',' : '--..--',
-                     ';' : '-.-.-.',
-                     '?' : '..--..',
-                     '!' : '-.-.--',
-                     '-' : '-....-',
-                     '_' : '..--.-',
-                     '(' : '-.--.',
-                     ')' : '-.--.-',
-                     '=' : '-...-',
-                     '+' : '.-.-.',
-                     '/' : '-..-.',
-                     '@' : '.--.-.',
-                     ' ' : ' /',
-                     '1' : '.----',
-                     '2' : '..---',
-                     '3' : '...--',
-                     '4' : '....-',
-                     '5' : '.....',
-                     '6' : '-....',
-                     '7' : '--...',
-                     '8' : '---..',
-                     '9' : '----.',
-                     '0' : '-----',
-                     'SOS' : '...---...',
-                     })
+MORSE_CODE_DICT = { 'A':'.-', 'B':'-...',
 
+                    'C':'-.-.', 'D':'-..', 'E':'.',
 
-def toMorse(text):
-    for x in text:
-        if(x != '-' and x != '.' and x != ' ' and x != '/'):
-            return True 
-    return False 
+                    'F':'..-.', 'G':'--.', 'H':'....',
 
+                    'I':'..', 'J':'.---', 'K':'-.-',
 
-def decrypt(text):
-    text = text.split()
-    tilak = ""
-    for x in text:
-        if(x == '/'):
-            tilak += ' '
-        elif(x in morse_dict.inverse):
-            tilak += morse_dict.inverse[x]
+                    'L':'.-..', 'M':'--', 'N':'-.',
+
+                    'O':'---', 'P':'.--.', 'Q':'--.-',
+
+                    'R':'.-.', 'S':'...', 'T':'-',
+
+                    'U':'..-', 'V':'...-', 'W':'.--',
+
+                    'X':'-..-', 'Y':'-.--', 'Z':'--..',
+
+                    '1':'.----', '2':'..---', '3':'...--',
+
+                    '4':'....-', '5':'.....', '6':'-....',
+
+                    '7':'--...', '8':'---..', '9':'----.',
+
+                    '0':'-----', ', ':'--..--', '.':'.-.-.-',
+
+                    '?':'..--..', '/':'-..-.', '-':'-....-',
+
+                    '(':'-.--.', ')':'-.--.-'}
+ 
+
+def encrypt(message):
+    cipher = ''
+    for letter in message:
+        if letter != ' ':
+            cipher += MORSE_CODE_DICT[letter] + ' '
         else:
-            tilak += 'UNKOWN' + '0'
-    return tilak
+            cipher += ' '
+    return cipher
 
 
-def encrypt(text):
-    tilak = ""
-    for x in text:
-        if(x in morse_dict):
-            tilak += morse_dict[x] + ' '
+def decrypt(message):
+    message += ' '
+    decipher = ''
+    citext = ''
+    for letter in message:
+        if (letter != ' '):
+            i = 0
+            citext += letter
         else:
-            tilak += 'UNKNOWN' + ' '
-    return tilak
+            i += 1
+            if i == 2 :
+                decipher += ' '
+            else:
+                decipher += list(MORSE_CODE_DICT.keys())[list(MORSE_CODE_DICT
+                .values()).index(citext)]
+                citext = ''
+    return decipher
 
 
 @ultroid_cmd(
-    pattern="morse", 
+    pattern="morse",
 )
-async def morsey(event):
+async def _(event):        
     input_ = event.text[4:]
     if not input_:
         if event.reply_to_msg_id:
@@ -300,10 +271,18 @@ async def morsey(event):
             input_ = previous_message.message
         else:
             return await eod(event, "Give me some text lol", time=5)
-    tilak = ""
-    if(toMorse(input_.upper())):
-        tilak =  encrypt(input_.upper())
-    else:
-        tilak = decrypt(input_.upper())
-    await eor(event, tilak)
-  
+    await eor(event, f"{encrypt(input_.upper())}")
+    
+
+@ultroid_cmd(
+    pattern="rmorse",
+)
+async def _(event):
+    input_ = event.text[5:]
+    if not input_:
+        if event.reply_to_msg_id:
+            previous_message = await event.get_reply_message()
+            input_ = previous_message.message
+        else:
+            return await eod(event, "Give me some text lol", time=5)
+    await eor(event, f"{decrypt(input_)}.lower()")
