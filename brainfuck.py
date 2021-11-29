@@ -200,7 +200,7 @@ async def _(event):
     await eor(event, f"{evaluate(input_)}")
 
 
-MORSE_CODE_DICT = { 'A':'.-', 'B':'-...',
+MORSE_CODE_DICT = { ',':',', 'A':'.-', 'B':'-...',
 
                     'C':'-.-.', 'D':'-..', 'E':'.',
 
@@ -285,4 +285,4 @@ async def _(event):
             input_ = previous_message.message
         else:
             return await eod(event, "Give me some text lol", time=5)
-    await eor(event, f"{decrypt(input_).lower()}")
+    await eor(event, decrypt(input_).lower())
