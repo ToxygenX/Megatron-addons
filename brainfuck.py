@@ -200,7 +200,7 @@ async def _(event):
     await eor(event, f"{evaluate(input_)}")
 
 
-MORSE_CODE_DICT = { ',':',', 'A':'.-', 'B':'-...',
+MORSE_CODE_DICT = { ',':',', "'":"'", 'A':'.-', 'B':'-...',
 
                     'C':'-.-.', 'D':'-..', 'E':'.',
 
