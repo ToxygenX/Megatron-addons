@@ -42,6 +42,7 @@ from . import *
 
 @ultroid_cmd(pattern="song ?(.*)")
 async def download_video(ult):
+    reply = await ult.get_reply_message()
     a = ult.text
     if a[5] == "s":
         return
@@ -129,6 +130,7 @@ async def download_video(ult):
         thumb=thumb,
         supports_streaming=True,
         caption=CAPT,
+        reply_to=reply,
         attributes=[
             DocumentAttributeAudio(
                 duration=int(rip_data["duration"]),
@@ -147,6 +149,7 @@ async def download_video(ult):
 
 @ultroid_cmd(pattern="vsong (.*)")
 async def download_vsong(ult):
+    reply = await ult.get_reply_message()
     x = await eor(ult, "Processing..")
     url = ult.pattern_match.group(1)
     if not url:
@@ -213,6 +216,7 @@ By - {}
         f"{rip_data['id']}.mp4",
         supports_streaming=True,
         caption=CAPT,
+        reply_to=reply,
     )
     os.remove(f"{rip_data['id']}.mp4")
     await x.delete()
