@@ -6,7 +6,6 @@
 
 • `{i}revert`
     Revert to your original identity
-
 """
 
 import html
@@ -19,38 +18,38 @@ from telethon.tl.types import MessageEntityMentionName
 from . import *
 
 
-@ultroid_cmd(pattern="clone ?(.*)")
+@ultroid_cmd(pattern="clone ?(.*)", fullsudo=True)
 async def _(event):
-    eve = await eor(event, "`Processing...`")
+    eve = await event.eor("`Processing...`")
     reply_message = await event.get_reply_message()
     whoiam = await event.client(GetFullUserRequest(ultroid_bot.uid))
-    if whoiam.about:
+    if whoiam.full_user.about:
         mybio = str(ultroid_bot.me.id) + "01"
-        udB.set(f"{mybio}", whoiam.about)  # saving bio for revert
-    udB.set(f"{ultroid_bot.uid}02", whoiam.user.first_name)
-    if whoiam.user.last_name:
-        udB.set(f"{ultroid_bot.uid}03", whoiam.user.last_name)
+        udB.set_key(f"{mybio}", whoiam.full_user.about)  # saving bio for revert
+    udB.set_key(f"{ultroid_bot.uid}02", whoiam.users[0].first_name)
+    if whoiam.users[0].last_name:
+        udB.set_key(f"{ultroid_bot.uid}03", whoiam.users[0].last_name)
     replied_user, error_i_a = await get_full_user(event)
     if replied_user is None:
         await eve.edit(str(error_i_a))
         return
-    user_id = replied_user.user.id
+    user_id = replied_user.users[0].id
     profile_pic = await event.client.download_profile_photo(user_id)
-    first_name = html.escape(replied_user.user.first_name)
+    first_name = html.escape(replied_user.users[0].first_name)
     if first_name is not None:
         first_name = first_name.replace("\u2060", "")
-    last_name = replied_user.user.last_name
+    last_name = replied_user.users[0].last_name
     if last_name is not None:
         last_name = html.escape(last_name)
         last_name = last_name.replace("\u2060", "")
     if last_name is None:
         last_name = "⁪⁬⁮⁮⁮"
-    user_bio = replied_user.about
+    user_bio = replied_user.full_user.about
     await event.client(UpdateProfileRequest(first_name=first_name))
     await event.client(UpdateProfileRequest(last_name=last_name))
     await event.client(UpdateProfileRequest(about=user_bio))
     if profile_pic:
-        pfile = await event.client.upload_file(profile_pic)  # pylint:disable=E060
+        pfile = await event.client.upload_file(profile_pic)
         await event.client(UploadProfilePhotoRequest(pfile))
     await eve.delete()
     await event.client.send_message(
@@ -64,11 +63,11 @@ async def _(event):
     ok = ""
     mybio = str(ultroid_bot.me.id) + "01"
     bio = "Error : Bio Lost"
-    chc = udB.get(mybio)
+    chc = udB.get_key(mybio)
     if chc:
         bio = chc
-    fname = udB.get(f"{ultroid_bot.uid}02")
-    lname = udB.get(f"{ultroid_bot.uid}03")
+    fname = udB.get_key(f"{ultroid_bot.uid}02")
+    lname = udB.get_key(f"{ultroid_bot.uid}03")
     if fname:
         name = fname
     if lname:
@@ -81,10 +80,10 @@ async def _(event):
     await client(UpdateProfileRequest(about=bio))
     await client(UpdateProfileRequest(first_name=name))
     await client(UpdateProfileRequest(last_name=ok))
-    await eor(event, "Succesfully reverted to your account back !")
-    udB.delete(f"{ultroid_bot.uid}01")
-    udB.delete(f"{ultroid_bot.uid}02")
-    udB.delete(f"{ultroid_bot.uid}03")
+    await event.eor("Succesfully reverted to your account back !")
+    udB.del_key(f"{ultroid_bot.uid}01")
+    udB.del_key(f"{ultroid_bot.uid}02")
+    udB.del_key(f"{ultroid_bot.uid}03")
 
 
 async def get_full_user(event):
@@ -98,11 +97,10 @@ async def get_full_user(event):
                 )
             )
             return replied_user, None
-        else:
-            replied_user = await event.client(
-                GetFullUserRequest(previous_message.sender_id)
-            )
-            return replied_user, None
+        replied_user = await event.client(
+            GetFullUserRequest(previous_message.sender_id)
+        )
+        return replied_user, None
     else:
         input_str = None
         try:
@@ -116,14 +114,13 @@ async def get_full_user(event):
                 user_id = probable_user_mention_entity.user_id
                 replied_user = await event.client(GetFullUserRequest(user_id))
                 return replied_user, None
-            else:
-                try:
-                    user_object = await event.client.get_entity(input_str)
-                    user_id = user_object.id
-                    replied_user = await event.client(GetFullUserRequest(user_id))
-                    return replied_user, None
-                except Exception as e:
-                    return None, e
+            try:
+                user_object = await event.client.get_entity(input_str)
+                user_id = user_object.id
+                replied_user = await event.client(GetFullUserRequest(user_id))
+                return replied_user, None
+            except Exception as e:
+                return None, e
         elif event.is_private:
             try:
                 user_id = event.chat_id
