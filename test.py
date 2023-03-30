@@ -2,7 +2,7 @@
 ✘ Commands Available -
 
 • `{i}test`
-    Test Your Server Speed.
+    Test CɪᴘʜᴇʀX Server Speed.
 
 """
 
@@ -21,7 +21,7 @@ async def _(event):
         as_document = False
     elif input_str == "file":
         as_document = True
-    xx = await event.eor("`Calculating ur Ultroid Server Speed. Please wait!`")
+    xx = await event.eor("`Ⲥⲁⳑⲥυⳑⲁⲧⲓⲛⳋ CɪᴘʜᴇʀX Ⲋⲉʀⳳⲉʀ Ⲋⲣⲉⲉⲇ...`")
     start = datetime.now()
     s = speedtest.Speedtest()
     s.get_best_server()
@@ -44,13 +44,13 @@ async def _(event):
         speedtest_image = response
         if as_document is None:
             await xx.edit(
-                """`Ultroid Server Speed in {} sec`
+                """`CɪᴘʜᴇʀX Ⲋⲉʀⳳⲉʀ Ⲥⲁⳑⲥυⳑⲁⲧⲉⲇ Ⲋⲣⲉⲉⲇ Ⲓⲛ {} Ⲋⲉⲥ`
 
-`Download: {}`
-`Upload: {}`
-`Ping: {}`
-`Internet Service Provider: {}`
-`ISP Rating: {}`""".format(
+`Dᴏwnlᴏᴀd: {}`
+`Uᴩlᴏᴀd: {}`
+`𝙿𝙸𝙽𝙶: {}`
+`Inᴛᴇrnᴇᴛ Sᴇrviᴄᴇ Prᴏvidᴇr: {}`
+`ISP Rᴀᴛing: {}`""".format(
                     ms,
                     humanbytes(download_speed),
                     humanbytes(upload_speed),
@@ -63,7 +63,7 @@ async def _(event):
             await event.client.send_file(
                 event.chat_id,
                 speedtest_image,
-                caption="**SpeedTest** completed in {} seconds".format(ms),
+                caption="**Ⲋⲣⲉⲉⲇ Ⲧⲉⲋⲧ** Ⲥⲟⲙⲣⳑⲉⲧⲉⲇ ⲓⲛ {} Ⲋⲉⲥⲟⲛⲇⲋ".format(ms),
                 force_document=as_document,
                 reply_to=reply_msg_id,
                 allow_cache=False,
@@ -71,10 +71,10 @@ async def _(event):
             await event.delete()
     except Exception as exc:  # dc
         await xx.edit(
-            """**SpeedTest** completed in {} seconds
-Download: {}
-Upload: {}
-Ping: {}
+            """**Ⲋⲣⲉⲉⲇ Ⲧⲉⲋⲧ** Ⲥⲟⲙⲣⳑⲉⲧⲉⲇ ⲓⲛ {} Ⲋⲉⲥⲟⲛⲇⲋ
+Dᴏwnlᴏᴀd: {}
+Uᴩlᴏᴀd: {}
+𝙿𝙸𝙽𝙶: {}
 
 
 __With the Following ERRORs__
