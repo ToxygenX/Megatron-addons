@@ -1,6 +1,3 @@
-# Ultroid Userbot
-# Made by senku
-
 """
 ✘ Commands Available
 
@@ -16,11 +13,11 @@ from . import *
 @ultroid_cmd(pattern="findsong$")
 async def _(event):
     if not event.reply_to_msg_id:
-        return await eor(event, "Reply to an audio message.")
+        return await event.eor("Reply to an audio message.")
     reply_message = await event.get_reply_message()
     chat = "@auddbot"
-    snku = await eor(event, "Identifying the song")
-    async with ultroid_bot.conversation(chat) as conv:
+    snku = await event.eor("Identifying the song")
+    async with event.client.conversation(chat) as conv:
         try:
             await conv.send_message("/start")
             await conv.get_response()
@@ -34,11 +31,8 @@ async def _(event):
             result = await conv.get_response()
             await event.client.send_read_acknowledge(conv.chat_id)
         except YouBlockedUserError:
-            await snku.edit("Please unblock bot and try again")
+            await snku.edit("Please unblock (@auddbot) and try again")
             return
     namem = f"**Song Name : **{result.text.splitlines()[0]}\
         \n\n**Details : **__{result.text.splitlines()[2]}__"
     await snku.edit(namem)
-
-
-
