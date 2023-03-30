@@ -1,7 +1,3 @@
-# " Made by @e3ris for Ultroid "
-# < https://github.com/TeamUltroid/Ultroid >
-# This Plugin uses @Text2gifBot.
-
 """
 ✘ **Makes Fancy Gif from your Words!**
 
@@ -11,7 +7,6 @@
 
 import os
 import random
-import re
 
 import emoji
 from telethon.utils import get_input_document
@@ -27,7 +22,7 @@ def remove_emoji(string):
 
 @ultroid_cmd(pattern="t2g ?(.*)")
 async def t2g(e):
-    eris = await eor(e, "`...`")
+    eris = await e.eor("`...`")
     input_args = e.pattern_match.group(1)
     if not input_args:
         input_args = "No Text was Given :(("
