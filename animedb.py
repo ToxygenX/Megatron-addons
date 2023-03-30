@@ -1,26 +1,21 @@
-# Made by : @Arnab431 || github.com/ArnabXD
-# Made For : https://github.com/TeamUltroid/UltroidAddons
-
 """
 Search animes and manga from anilist.co using @animedb_bot
 
 ✘ Commands Available
+
 • `{i}manga <keyword>`
     To get manga info
 """
 
-from telethon.errors import ChatSendInlineForbiddenError
 
 from . import *
-
-INLOCK = "`Seems like inline messages aren't allowed here`"
 
 
 @ultroid_cmd(
     pattern="manga ?(.*)",
 )
 async def manga(ult):
-    msg = await eor(ult, "`Searching ...`")
+    msg = await ult.eor("`Searching ...`")
     keyword = ult.pattern_match.group(1)
     if keyword is None:
         return await msg.edit("`Provide a Keyword to search`")
