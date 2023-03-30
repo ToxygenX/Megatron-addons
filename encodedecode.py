@@ -25,7 +25,7 @@ async def encod(e):
     byt = match.encode("ascii")
     et = base64.b64encode(byt)
     atc = et.decode("ascii")
-    await e.eor(f"**=>> Encoded Text :** `{match}`\n\n**=>> OUTPUT :**\n`{atc}`")
+    await e.eor(f"**=>> Ⲉⲛⲥⲟⲇⲉⲇ Ⲧⲉⲭⲧ :** `{match}`\n\n**=>> ⲞⳘⲦⲢⳘⲦ :**\n`{atc}`")
 
 
 @ultroid_cmd(pattern="decode ?(.*)")
@@ -41,6 +41,6 @@ async def encod(e):
     try:
         et = base64.b64decode(byt)
         atc = et.decode("ascii")
-        await e.eor(f"**=>> Decoded Text :** `{match}`\n\n**=>> OUTPUT :**\n`{atc}`")
+        await e.eor(f"**=>> Ⲇⲉⲥⲟⲇⲉⲇ Ⲧⲉⲭⲧ :** `{match}`\n\n**=>> ⲞⳘⲦⲢⳘⲦ :**\n`{atc}`")
     except Exception as p:
-        await e.eor("**ERROR :** " + str(p))
+        await e.eor("**ⲈRRⲞR :** " + str(p))
