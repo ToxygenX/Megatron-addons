@@ -9,15 +9,10 @@
 
 • `{i}rbf`
     Brainfuck Interpreter with string or reply.
-
-• `{i}morse`
-    Text to Morse Code String Generator with text or reply.
-
-• `{i}rmorse`
-    Morse Code Interpreter with string or reply.
 """
 
 from . import *
+
 
 def evaluate(commands):
     interpreter = BrainfuckInterpreter(commands)
@@ -26,13 +21,13 @@ def evaluate(commands):
 
     return interpreter.output.read()
 
-__all__ = (
-    'BrainfuckInterpreter'
-)
+
+__all__ = "BrainfuckInterpreter"
+
 
 class IOStream:
     def __init__(self, data=None):
-        self._buffer = data or ''
+        self._buffer = data or ""
 
     def __len__(self):
         return len(self._buffer)
@@ -40,7 +35,7 @@ class IOStream:
     def read(self, length=None):
         if not length:
             data = self._buffer
-            self._buffer = ''
+            self._buffer = ""
         else:
             data = self._buffer[:length]
             self._buffer = self._buffer[length:]
@@ -110,14 +105,14 @@ class BrainfuckInterpreter:
         self._opening_bracket_indexes = []
 
     def _look_forward(self):
-        remaining_commands = self._commands[self.instruction_pointer:]
+        remaining_commands = self._commands[self.instruction_pointer :]
         loop_counter = 0
         index = self.instruction_pointer
 
         for command in remaining_commands:
-            if command == '[':
+            if command == "[":
                 loop_counter += 1
-            elif command == ']':
+            elif command == "]":
                 loop_counter -= 1
 
             if loop_counter == 0:
@@ -128,25 +123,25 @@ class BrainfuckInterpreter:
     def _interpret(self):
         instruction = self._commands[self.instruction_pointer]
 
-        if instruction == '>':
+        if instruction == ">":
             self.cells.data_pointer += 1
-        elif instruction == '<':
+        elif instruction == "<":
             self.cells.data_pointer -= 1
-        elif instruction == '+':
+        elif instruction == "+":
             self.cells.increment()
-        elif instruction == '-':
+        elif instruction == "-":
             self.cells.decrement()
-        elif instruction == '.':
+        elif instruction == ".":
             self.output.write(chr(self.cells.get()))
-        elif instruction == ',':
+        elif instruction == ",":
             self.cells.set(self.input.read(1))
-        elif instruction == '[':
+        elif instruction == "[":
             if self.cells.get() == 0:
                 loop_end = self._look_forward()
                 self.instruction_pointer = loop_end
             else:
                 self._opening_bracket_indexes.append(self.instruction_pointer)
-        elif instruction == ']':
+        elif instruction == "]":
             if self.cells.get() != 0:
                 opening_bracket_index = self._opening_bracket_indexes.pop(-1)
 
@@ -166,16 +161,22 @@ class BrainfuckInterpreter:
 
 
 def bf(text):
-  items = []
-  for c in text:
-     items.append('[-]>[-]<' + ('+' * (ord(c) // 10)) + '[>++++++++++<-]>' + ('+' * (ord(c) % 10)) + '.<')
-  return ''.join(items)
+    items = []
+    for c in text:
+        items.append(
+            "[-]>[-]<"
+            + ("+" * (ord(c) // 10))
+            + "[>++++++++++<-]>"
+            + ("+" * (ord(c) % 10))
+            + ".<"
+        )
+    return "".join(items)
 
 
 @ultroid_cmd(
     pattern="bf",
 )
-async def _(event):        
+async def _(event):
     input_ = event.text[4:]
     if not input_:
         if event.reply_to_msg_id:
@@ -183,8 +184,8 @@ async def _(event):
             input_ = previous_message.message
         else:
             return await eod(event, "Give me some text lol", time=5)
-    await eor(event, f"{bf(input_)}")
-    
+    await event.eor(bf(input_))
+
 
 @ultroid_cmd(
     pattern="rbf",
@@ -197,92 +198,4 @@ async def _(event):
             input_ = previous_message.message
         else:
             return await eod(event, "Give me some text lol", time=5)
-    await eor(event, f"{evaluate(input_)}")
-
-
-MORSE_CODE_DICT = { ',':',', "'":"'", 'A':'.-', 'B':'-...',
-
-                    'C':'-.-.', 'D':'-..', 'E':'.',
-
-                    'F':'..-.', 'G':'--.', 'H':'....',
-
-                    'I':'..', 'J':'.---', 'K':'-.-',
-
-                    'L':'.-..', 'M':'--', 'N':'-.',
-
-                    'O':'---', 'P':'.--.', 'Q':'--.-',
-
-                    'R':'.-.', 'S':'...', 'T':'-',
-
-                    'U':'..-', 'V':'...-', 'W':'.--',
-
-                    'X':'-..-', 'Y':'-.--', 'Z':'--..',
-
-                    '1':'.----', '2':'..---', '3':'...--',
-
-                    '4':'....-', '5':'.....', '6':'-....',
-
-                    '7':'--...', '8':'---..', '9':'----.',
-
-                    '0':'-----', ', ':'--..--', '.':'.-.-.-',
-
-                    '?':'..--..', '/':'-..-.', '-':'-....-',
-
-                    '(':'-.--.', ')':'-.--.-'}
- 
-
-def encrypt(message):
-    cipher = ''
-    for letter in message:
-        if letter != ' ':
-            cipher += MORSE_CODE_DICT[letter] + ' '
-        else:
-            cipher += ' '
-    return cipher
-
-
-def decrypt(message):
-    message += ' '
-    decipher = ''
-    citext = ''
-    for letter in message:
-        if (letter != ' '):
-            i = 0
-            citext += letter
-        else:
-            i += 1
-            if i == 2 :
-                decipher += ' '
-            else:
-                decipher += list(MORSE_CODE_DICT.keys())[list(MORSE_CODE_DICT
-                .values()).index(citext)]
-                citext = ''
-    return decipher
-
-
-@ultroid_cmd(
-    pattern="morse",
-)
-async def _(event):        
-    input_ = event.text[4:]
-    if not input_:
-        if event.reply_to_msg_id:
-            previous_message = await event.get_reply_message()
-            input_ = previous_message.message
-        else:
-            return await eod(event, "Give me some text lol", time=5)
-    await eor(event, f"{encrypt(input_.upper())}")
-    
-
-@ultroid_cmd(
-    pattern="rmorse",
-)
-async def _(event):
-    input_ = event.text[5:]
-    if not input_:
-        if event.reply_to_msg_id:
-            previous_message = await event.get_reply_message()
-            input_ = previous_message.message
-        else:
-            return await eod(event, "Give me some text lol", time=5)
-    await eor(event, decrypt(input_).lower())
+    await event.eor(f"{evaluate(input_)}")
