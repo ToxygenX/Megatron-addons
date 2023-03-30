@@ -1,8 +1,3 @@
-# " Made by @e3ris for Ultroid. "
-# < https://github.com/TeamUltroid/Ultroid >
-# idea: https://t.me/TelethonChat/256160
-
-
 """
 ✘ To Search Messages in chat easily :)
 
@@ -12,14 +7,14 @@
     »» To search in Reverse order.
 
 ✘ **Examples** :
-   •  `{i}search CipherX`
+   •  `{i}search Ultroid`
    •  `{i}search -r Heroku : 10`
 """
 
 
 @ultroid_cmd(pattern="search( -r|) ?(.*)")
 async def searcher(e):
-    eris = await eor(e, "`Working...`")
+    eris = await e.eor("`Working..`")
     args = e.pattern_match.group(2)
     limit = 5
     if not args or len(args) < 2:
@@ -30,7 +25,7 @@ async def searcher(e):
         args, limit = args.split(":", 1)
     try:
         limit = int(limit)
-    except:
+    except BaseException:
         limit = 5
 
     limit = 99 if limit > 99 else limit
@@ -39,7 +34,7 @@ async def searcher(e):
         e.chat_id,
         search=args.strip(),
         limit=limit,
-        reverse=bool(e.pattern_match.group(1))
+        reverse=bool(e.pattern_match.group(1)),
     ):
         text += f" [»» {msg.id}](t.me/c/{e.chat.id}/{msg.id})\n"
         c += 1
@@ -49,4 +44,4 @@ async def searcher(e):
         if c > 0
         else f"**No Results for :**  `{args}`"
     )
-    await eris.edit(txt) 
+    await eris.edit(txt)
