@@ -16,3 +16,7 @@ speechrecognition
 speedtest-cli
 textblob
 wikipedia
+emoji
+aiocron 
+glitch_this
+pygments
