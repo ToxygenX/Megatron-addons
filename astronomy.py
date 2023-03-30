@@ -5,16 +5,15 @@
     Get Astronomy Picture of Day by NASA
 """
 
-import requests as r
 from bs4 import BeautifulSoup as bs
 
-from . import *
+from . import ultroid_cmd, async_searcher
 
 
 @ultroid_cmd(pattern="apod$")
 async def aposj(e):
     link = "https://apod.nasa.gov/apod/"
-    C = r.get(link).content
+    C = await async_searcher(link)
     m = bs(C, "html.parser", from_encoding="utf-8")
     try:
         try:
@@ -24,8 +23,8 @@ async def aposj(e):
             img = None
         expla = m.find_all("p")[2].text.replace("\n", " ")
         expla = expla.split("     ")[0]
-        if len(expla) > 3000:
-            expla = expla[:3000] + "..."
+        if len(expla) > 900:
+            expla = expla[:900] + "..."
         expla = "__" + expla + "__"
         await e.reply(expla, file=img)
         if e.out:
