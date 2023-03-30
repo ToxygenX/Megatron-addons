@@ -22,16 +22,14 @@
 
 from random import choice
 
-from telethon.errors import ChatSendInlineForbiddenError
+from addons.waifu import deEmojify
 
-from plugins.stickertools import deEmojify
-
-from . import *
+from . import ultroid_cmd, get_string
 
 
 @ultroid_cmd(pattern="tweet ?(.*)")
 async def tweet(e):
-    wai = await eor(e, "`Processing...`")
+    wai = await e.eor()
     text = e.pattern_match.group(1)
     if not text:
         return await wai.edit("`Give me Some Text !`")
@@ -40,14 +38,14 @@ async def tweet(e):
         await e.reply("New Tweet", file=results[0].document)
         await wai.delete()
     except Exception as m:
-        await eor(e, str(m))
+        await e.eor(str(m))
 
 
 @ultroid_cmd(pattern="stic ?(.*)")
 async def tweet(e):
     if len(e.text) > 5 and e.text[5] != " ":
         return
-    wai = await eor(e, "`Processing...`")
+    wai = await e.eor(get_string("com_1"))
     text = e.pattern_match.group(1)
     if not text:
         return await wai.edit("`Give me Some Emoji !`")
@@ -59,7 +57,7 @@ async def tweet(e):
 
 @ultroid_cmd(pattern="gglax ?(.*)")
 async def gglax_sticker(e):
-    wai = await eor(e, "`Processing...`")
+    wai = await e.eor(get_string("com_1"))
     text = e.pattern_match.group(1)
     if not text:
         return await wai.edit("`Give me Some Text !`")
@@ -68,12 +66,12 @@ async def gglax_sticker(e):
         await e.reply("Googlax", file=results[0].document)
         await wai.delete()
     except Exception as m:
-        await eor(e, str(m))
+        await e.eor(str(m))
 
 
 @ultroid_cmd(pattern="frog ?(.*)")
 async def honkasays(e):
-    wai = await eor(e, "`Processing...`")
+    wai = await e.eor(get_string("com_1"))
     text = e.pattern_match.group(1)
     if not text:
         return await wai.edit("`Give Me Some Text !`")
@@ -98,14 +96,13 @@ async def honkasays(e):
 async def nope(doit):
     ok = doit.pattern_match.group(1)
     replied = await doit.get_reply_message()
-    a = await eor(doit, "`Processing...`")
+    a = await doit.eor(get_string("com_1"))
     if ok:
         pass
     elif replied and replied.message:
         ok = replied.message
     else:
-        return await eor(
-            doit,
+        return await doit.eor(
             "`Sir please give some query to search and download it for you..!`",
         )
     sticcers = await doit.client.inline_query("Lybot", f"{(deEmojify(ok))}")
@@ -116,12 +113,14 @@ async def nope(doit):
 @ultroid_cmd(pattern="quot ?(.*)")
 async def quote_(event):
     IFUZI = event.pattern_match.group(1)
+    if "quotly" in event.text:
+        return
     if not IFUZI:
-        return await eor(event, "`Give some text to make Quote..`")
-    EI_IR = await eor(event, "`Processing...`")
+        return await event.eor("`Give some text to make Quote..`")
+    EI_IR = await event.eor(get_string("com_1"))
     try:
         RE_ZK = await event.client.inline_query("@QuotAfBot", IFUZI)
         await event.reply(file=choice(RE_ZK).document)
     except Exception as U_TG:
-        return await eor(EI_IR, str(U_TG))
+        return await EI_IR.edit(str(U_TG))
     await EI_IR.delete()
