@@ -36,4 +36,4 @@ async def ocrify(ult):
         re_json=True,
     )
     trt = gr["ParsedResults"][0]["ParsedText"]
-    await msg.edit(f"**🎉 OCR PORTAL\n\nRESULTS ~ ** `{trt}`")
+    await msg.edit(f"**🎉 ⲞⲤR Ⲣⲟʀⲧⲁⳑ\n\nRⲉⲋυⳑⲧⲋ ~ ** `{trt}`")
