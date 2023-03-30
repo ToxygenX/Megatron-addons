@@ -4,11 +4,11 @@
 • `{i}joke`
     To get joke.
 
-• `{i}insult`
-    Insult someone..
-
 • `{i}url <long url>`
     To get a shorten link of long link.
+
+• `{i}phlogo <first_name> <last_name>`
+    Make a phub based logo.
 
 • `{i}decide`
     Decide something.
@@ -21,62 +21,51 @@
 
 • `{i}gps <name of place>`
     Shows the desired place in the map.
-
 """
 
-import random
+import random, os
 
 import requests
 from bs4 import BeautifulSoup as bs
 from pyjokes import get_joke
 from telethon.errors import ChatSendMediaForbiddenError
+from phlogo import generate
 
-from . import *
+from . import ultroid_cmd, get_string, HNDLR, async_searcher
 
 
 @ultroid_cmd(pattern="joke$")
 async def _(ult):
-    await eor(ult, get_joke())
-
-
-@ultroid_cmd(pattern="insult$")
-async def gtruth(ult):
-    m = await eor(ult, "Generating...")
-    nl = "https://fungenerators.com/random/insult/new-age-insult/"
-    ct = requests.get(nl).content
-    bsc = bs(ct, "html.parser", from_encoding="utf-8")
-    cm = bsc.find_all("h2")[0].text
-    await m.edit(f"{cm}")
+    await ult.eor(get_joke())
 
 
 @ultroid_cmd(pattern="url ?(.*)")
 async def _(event):
     input_str = event.pattern_match.group(1)
     if not input_str:
-        await eor(event, "Give some url")
+        await event.eor("`Give some url`")
         return
     sample_url = "https://da.gd/s?url={}".format(input_str)
     response_api = requests.get(sample_url).text
     if response_api:
-        await eor(
-            event,
+        await event.eor(
             "**Shortened url**==> {}\n**Given url**==> {}.".format(
                 response_api, input_str
             ),
         )
     else:
-        await eor(event, "`Something went wrong. Please try again Later.`")
+        await event.eor("`Something went wrong. Please try again Later.`")
 
 
 @ultroid_cmd(pattern="decide$")
 async def _(event):
-    hm = await eor(event, "`Deciding`")
-    r = requests.get("https://yesno.wtf/api").json()
+    hm = await event.eor("`Deciding`")
+    r = await async_searcher("https://yesno.wtf/api", re_json=True)
     try:
         await event.reply(r["answer"], file=r["image"])
         await hm.delete()
     except ChatSendMediaForbiddenError:
-        await eor(event, r["answer"])
+        await event.eor(r["answer"])
 
 
 @ultroid_cmd(pattern="xo$")
@@ -88,22 +77,40 @@ async def xo(ult):
     await ult.delete()
 
 
-@ultroid_cmd(pattern="wordi$")
-async def word(ult):
-    game = await ult.client.inline_query("wordibot", "play")
-    await game[0].click(
-        ult.chat_id, reply_to=ult.reply_to_msg_id, silent=True, hide_via=True
+@ultroid_cmd(pattern="phlogo( (.*)|$)")
+async def make_logog(ult):
+    msg = await ult.eor(get_string("com_1"))
+    match = ult.pattern_match.group(1).strip()
+    reply = await ult.get_reply_message()
+    if not match and (reply and reply.text):
+        match = reply.text
+    else:
+        return await msg.edit(f"`Provide a name to make logo...`")
+    first, last = "", ""
+    if len(match.split()) >= 2:
+        first, last = match.split()[:2]
+    else:
+        last = match
+    logo = generate(first, last)
+    name = f"{ult.id}.png"
+    logo.save(name)
+    await ult.client.send_message(
+        ult.chat_id, file=name, reply_to=ult.reply_to_msg_id or ult.id
     )
-    await ult.delete()
+    os.remove(name)
+    await msg.delete()
 
 
-@ultroid_cmd(pattern="gps (.*)")
-async def map(ult):
-    get = ult.pattern_match.group(1)
+Bot = {"gps":"openmap_bot", "wordi":"wordibot"}
+
+@ultroid_cmd(pattern="(gps|wordi) (.*)")
+async def _map(ult):
+    cmd = ult.pattern_match.group(1)
+    get = ult.pattern_match.group(2)
     if not get:
-        return await eor(ult, "Use this command as `.gps <query>`")
-    gps = await ult.client.inline_query("openmap_bot", f"{get}")
-    await gps[0].click(
+        return await ult.eor(f"Use this command as `{HNDLR}{cmd} <query>`")
+    quer = await ult.client.inline_query(Bot[cmd], get)
+    await quer[0].click(
         ult.chat_id, reply_to=ult.reply_to_msg_id, silent=True, hide_via=True
     )
     await ult.delete()
