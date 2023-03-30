@@ -1,54 +1,9 @@
 """
 ✘ Commands Available -
 
-• `{i}quotly | {i}qbot <colour name/code><replying a message>`
-    send stickers to current chat with QuotlyBot.
-
-• `{i}q <reply>`
+• `{i}qbot <reply>`
     Make sticker quote without QuotlyBot
 """
-
-import asyncio
-
-from telethon import events
-from telethon.errors.rpcerrorlist import YouBlockedUserError
-
-from . import *
-
-ERR = "`Can you kindly disable your forward privacy settings for good?`"
-
-
-@ultroid_cmd(pattern="(quotly|qbot) ?(.*)")
-async def _(event):
-    if not event.reply_to_msg_id:
-        return await eor(event, "```Reply to any user message.```")
-    reply_message = await event.get_reply_message()
-    chat = "@QuotLyBot"
-    reply_message.sender
-    ac = await eor(event, "```Making a Quote```")
-    col = event.pattern_match.group(2)
-    async with event.client.conversation(chat) as conv:
-        try:
-            response = conv.wait_event(
-                events.NewMessage(incoming=True, from_users=1031952739)
-            )
-            er = await event.client.forward_messages(chat, reply_message)
-            if not len(col) == 0:  # Bad way
-                await asyncio.sleep(3)
-                await er.reply(f"/q {col}")
-            response = await response
-            await ultroid_bot.send_read_acknowledge(chat)
-        except YouBlockedUserError:
-            return await event.reply("```Please unblock @QuotLyBot and try again```")
-        if response.text.startswith("Hi!"):
-            await eor(event, ERR)
-        else:
-            await ac.delete()
-            await event.client.send_message(event.chat_id, response.message)
-
-
-# Oringinal Source from Nicegrill: https://github.com/erenmetesar/NiceGrill/
-# Ported to Ultroid
 
 
 import json
@@ -61,6 +16,12 @@ import emoji
 from fontTools.ttLib import TTFont
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 from telethon.tl import functions, types
+from telethon.errors.rpcerrorlist import UserNotParticipantError
+from . import *
+
+# Oringinal Source from Nicegrill: https://github.com/erenmetesar/NiceGrill/
+# Ported to Ultroid
+
 
 COLORS = [
     "#F07975",
@@ -104,7 +65,6 @@ async def process(msg, user, client, reply, replied=None):
                     width = mono.getsize(line[:43])[0] + 30
                 else:
                     width = fallback.getsize(line[:43])[0]
-            next
         else:
             text.append(line + "\n")
             if width < fallback.getsize(line)[0]:
@@ -124,8 +84,10 @@ async def process(msg, user, client, reply, replied=None):
             title = details.participant.rank if details.participant.rank else "Creator"
         elif isinstance(details.participant, types.ChannelParticipantAdmin):
             title = details.participant.rank if details.participant.rank else "Admin"
-    except TypeError:
+    except (TypeError, UserNotParticipantError):
         pass
+    except Exception as er:
+        LOGS.exception(er)
     titlewidth = font2.getsize(title)[0]
 
     # Get user name
@@ -180,7 +142,6 @@ async def process(msg, user, client, reply, replied=None):
         replname = "" if not replied.sender.last_name else replied.sender.last_name
         fname = "" if not replied.sender.first_name else replied.sender.first_name
         reptot = fname + " " + replname
-        font2.getsize(reptot)[0]
         if reply.sticker:
             sticker = await reply.download_media()
             stimg = Image.open(sticker)
@@ -237,9 +198,9 @@ async def process(msg, user, client, reply, replied=None):
         elif reply.document.size < 1048576:
             docsize = str(round(reply.document.size / 1024, 2)) + " KB "
         elif reply.document.size < 1073741824:
-            docsize = str(round(reply.document.size / 1024 ** 2, 2)) + " MB "
+            docsize = str(round(reply.document.size / 1024**2, 2)) + " MB "
         else:
-            docsize = str(round(reply.document.size / 1024 ** 3, 2)) + " GB "
+            docsize = str(round(reply.document.size / 1024**3, 2)) + " GB "
         docbglen = (
             font.getsize(docsize)[0]
             if font.getsize(docsize)[0] > font.getsize(docname)[0]
@@ -386,7 +347,7 @@ async def get_entity(msg):
     return bold, mono, italic, link
 
 
-async def doctype(name, size, type, canvas):
+async def doctype(name, size, _type, canvas):
     font = ImageFont.truetype("resources/fonts/Roboto-Medium.ttf", 38)
     doc = Image.new("RGBA", (130, 130), (29, 29, 29, 255))
     draw = ImageDraw.Draw(doc)
@@ -397,7 +358,7 @@ async def doctype(name, size, type, canvas):
     canvas.paste(doc, (160, 23))
     draw2 = ImageDraw.Draw(canvas)
     draw2.text((320, 40), name, font=font, fill="white")
-    draw2.text((320, 97), size + type, font=font, fill="#AAAAAA")
+    draw2.text((320, 97), size + _type, font=font, fill="#AAAAAA")
     return canvas
 
 
@@ -425,11 +386,8 @@ async def emoji_fetch(emoji):
         return await transparent(
             urllib.request.urlretrieve(img, "resources/emoji.png")[0]
         )
-    else:
-        img = emojis["⛔"]
-        return await transparent(
-            urllib.request.urlretrieve(img, "resources/emoji.png")[0]
-        )
+    img = emojis["⛔"]
+    return await transparent(urllib.request.urlretrieve(img, "resources/emoji.png")[0])
 
 
 async def transparent(emoji):
@@ -469,7 +427,7 @@ async def replied_user(draw, tot, text, maxlength, title):
             space += textfont.getsize(letter)[0]
 
 
-@ultroid_cmd(pattern="q$")
+@ultroid_cmd(pattern="qbot$")
 async def _(event):
     reply = await event.get_reply_message()
     msg = reply.message
