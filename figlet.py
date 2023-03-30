@@ -7,7 +7,7 @@
 
 import pyfiglet
 
-from . import *
+from . import ultroid_cmd, split_list
 
 CMD_SET = {
     "slant": "slant",
@@ -341,7 +341,6 @@ CMD_SET = {
     "skateord": "skateord",
     "skateroc": "skateroc",
     "sketchs": "sketch_s",
-    "slant": "slant",
     "slide": "slide",
     "slscript": "slscript",
     "sm": "sm______",
@@ -460,25 +459,48 @@ CMD_SET = {
     "zone7": "zone7___",
 }
 
+DataList = sorted(list(CMD_SET.keys()))
+Split = split_list(DataList, 42)
+offset = 0
 
-@ultroid_cmd(pattern="figlet ?(.*)")
+
+@ultroid_cmd(pattern="figlet( ?(.*)|$)")
 async def figlet(event):
-    input_str = event.pattern_match.group(1)
+    input_str = event.pattern_match.group(1).strip()
+    if not input_str:
+        return await event.eor("`Provide some text to make figlet...`")
+    if input_str == "list":
+        global offset
+        if offset == len(Split):
+            offset = 0
+        All = Split[offset]
+        Text = "**List of Figlet Fonts :**\n\n"
+        while All:
+            c = 3
+            Nline = "••  " + " ".join([f"`{a}`" for a in All[:3]])
+            while (c < len(All) - 1) and len(Nline) < 32:
+                c += 1
+                Nline += f" `{All[c]}`"
+            Text += Nline + "\n"
+            All = All[c:]
+        await event.eor(Text)
+        offset += 1
+        return
     if "|" in input_str:
         text, cmd = input_str.split("|", maxsplit=1)
     elif input_str is not None:
         cmd = None
         text = input_str
     else:
-        await eor(event, "Please add some text to figlet")
+        await event.eor("Please add some text to figlet")
         return
     if cmd is not None:
         try:
             font = CMD_SET[cmd]
         except KeyError:
-            await eor(event, "Invalid selected font.")
+            await event.eor("Invalid selected font.")
             return
         result = pyfiglet.figlet_format(text, font=font)
     else:
         result = pyfiglet.figlet_format(text)
-    await eor(event, f"‌‌‎`{result}`")
+    await event.eor(f"‌‌‎`{result}`")
