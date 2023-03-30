@@ -31,7 +31,7 @@ async def _(event):
             result = await conv.get_response()
             await event.client.send_read_acknowledge(conv.chat_id)
         except YouBlockedUserError:
-            await snku.edit("Please unblock (@auddbot) and try again")
+            await snku.edit("Please unblock bot and try again")
             return
     namem = f"**Song Name : **{result.text.splitlines()[0]}\
         \n\n**Details : **__{result.text.splitlines()[2]}__"
