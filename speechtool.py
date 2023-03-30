@@ -9,7 +9,6 @@
   `Note - Sometimes Not 100% Accurate`
 """
 
-import asyncio
 import os
 import subprocess
 from datetime import datetime
@@ -35,7 +34,7 @@ async def _(event):
     elif "|" in input_str:
         lan, text = input_str.split("|")
     else:
-        await eor(event, "Invalid Syntax. Module stopping.")
+        await event.eor("Invalid Syntax. Module stopping.")
         return
     text = text.strip()
     lan = lan.strip()
@@ -62,7 +61,7 @@ async def _(event):
         try:
             subprocess.check_output(command_to_execute, stderr=subprocess.STDOUT)
         except (subprocess.CalledProcessError, NameError, FileNotFoundError) as exc:
-            await eor(event, str(exc))
+            await event.eor(str(exc))
         else:
             os.remove(required_file_name)
             required_file_name = required_file_name + ".opus"
@@ -74,7 +73,7 @@ async def _(event):
         os.remove(required_file_name)
         await eod(event, "Processed {} ({}) in {} seconds!".format(text[0:97], lan, ms))
     except Exception as e:
-        await eor(event, str(e))
+        await event.eor(str(e))
 
 
 @ultroid_cmd(pattern="stt")
@@ -91,8 +90,8 @@ async def speec_(e):
     try:
         text = reco.recognize_google(audio, language="en-IN")
     except Exception as er:
-        return await eor(e, str(er))
+        return await e.eor(str(er))
     out = "**Extracted Text :**\n `" + text + "`"
-    await eor(e, out)
+    await e.eor(out)
     os.remove(fn)
     os.remove(re)
