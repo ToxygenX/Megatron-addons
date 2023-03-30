@@ -1,10 +1,3 @@
-# Ultroid - UserBot
-# Copyright (C) 2020 TeamUltroid
-#
-# This file is a part of < https://github.com/TeamUltroid/Ultroid/ >
-# PLease read the GNU Affero General Public License in
-# <https://www.github.com/TeamUltroid/Ultroid/blob/main/LICENSE/>.
-
 """
 ✘ Commands Available -
 • `{i}spam <no of msgs> <your msg>`
@@ -15,9 +8,6 @@
   `{i}bigspam <no of msgs> <reply message>`
     Spams chat, the current limit is above 100.
 
-• `{i}picspam <no of spam> <reply to media>`
-    Spam media.
-
 • `{i}delayspam <delay time> <count> <msg>`
     Spam chat with delays..
 
@@ -26,7 +16,6 @@
 """
 
 import asyncio
-import os
 
 from . import *
 
@@ -62,7 +51,7 @@ async def spammer(e):
     await e.delete()
 
 
-@ultroid_cmd(pattern="bigspam")
+@ultroid_cmd(pattern="bigspam", fullsudo=True)
 async def bigspam(e):
     message = e.text
     if e.reply_to:
@@ -80,19 +69,6 @@ async def bigspam(e):
         return await eod(e, "`Use in Proper Format`")
     await asyncio.wait([e.respond(spam_message) for i in range(counter)])
     await e.delete()
-
-@ultroid_cmd(pattern="picspam")
-async def tiny_pic_spam(e):
-    if not e.text[0].isalpha() and e.text[0] not in ("/", "#", "@", "!"):
-        reply = await e.get_reply_message()
-        message = e.text
-        text = message.split()
-        counter = int(text[1])
-        media = await e.client.download_media(reply)
-        for i in range(1, counter):
-            await e.client.send_file(e.chat_id, media)
-        os.remove(media)
-        await e.delete()
 
 
 @ultroid_cmd(pattern="delayspam ?(.*)")
