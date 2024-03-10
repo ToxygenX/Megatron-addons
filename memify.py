@@ -58,6 +58,7 @@ async def ultd(event):
         event.chat_id, stick, force_document=False, reply_to=event.reply_to_msg_id
     )
     await xx.delete()
+    os.remove("ultt.webp")
     try:
         os.remove(ultt)
         os.remove(file)
