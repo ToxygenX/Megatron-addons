@@ -13,7 +13,7 @@ except ImportError:
 
 from telethon.tl.types import InputWebDocument as wb
 
-from . import LOGS, callback, in_pattern, udB, async_searcher
+from . import LOGS, callback, in_pattern, udB, async_searcher, InlinePlugin
 
 # Define your OMDB API key
 OMDB_API_KEY = udB.get_key("OMDB")  #OpenMovies Database get free key from http://www.omdbapi.com/ with 1000 dailiy uses
@@ -279,3 +279,5 @@ async def extended_plot_button_clicked(event):
             [Button.inline("Back", data=f"imdb_back_button:{plot_id}")],
         ]
     await event.edit(extended_plot, buttons=btns)
+    
+InlinePlugin.update({"Iᴍᴅʙ Sᴇᴀʀᴄʜ": "imdb "})
