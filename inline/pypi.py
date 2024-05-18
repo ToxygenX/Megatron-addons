@@ -273,3 +273,5 @@ async def back_button_clicked(event):
     text = PYPI_LIST[qid]["text"]
     buttons = PYPI_LIST[qid]["buttons"]
     await event.edit(text, buttons=buttons)
+    
+InlinePlugin.update({"ᴘʏᴘɪ sᴇᴀʀᴄʜ": "pypi"})
