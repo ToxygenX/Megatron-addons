@@ -184,7 +184,7 @@ async def _(event):
             input_ = previous_message.message
         else:
             return await eod(event, "Give me some text lol", time=5)
-    await event.eor(bf(input_))
+    await event.eor(bf(input_), parse_mode=None)
 
 
 @ultroid_cmd(
