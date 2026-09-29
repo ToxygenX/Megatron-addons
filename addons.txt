@@ -7,7 +7,6 @@ git+https://github.com/New-dev0/AsyncLyricsExtractor.git
 markdownify
 phlogo
 pokedex.py
-pyfiglet
 pygments
 pyjokes
 quotefancy
