@@ -5,36 +5,64 @@
     Wikipedia search from telegram.
 """
 
-import wikipedia
-from wikipedia.exceptions import DisambiguationError, PageError, WikipediaException
+import json
+from urllib.parse import urlencode
+
+import requests
 
 from . import *
 
+_WIKI_API = "https://en.wikipedia.org/w/api.php"
+_HEADERS = {"User-Agent": "CipherXBot/1.2 (+https://t.me/CipherXBot)"}
 
-def _summary_for(query: str) -> str:
+
+def _get_json(params: dict):
+    url = _WIKI_API + "?" + urlencode(params)
     try:
-        return wikipedia.summary(query, sentences=3, auto_suggest=True)
-    except DisambiguationError as exc:
-        options = [opt for opt in exc.options if opt]
-        if not options:
-            raise PageError(query)
-        # Try the closest disambiguation results instead of dying.
-        errors = []
-        for option in options[:4]:
-            try:
-                return wikipedia.summary(option, sentences=3, auto_suggest=False)
-            except Exception as err:
-                errors.append(str(err))
-        return (
-            "**Multiple matches found. Try one of these:**\n"
-            + "\n".join(f"- `{option}`" for option in options[:8])
+        response = requests.get(url, headers=_HEADERS, timeout=20)
+        response.raise_for_status()
+        return response.json()
+    except (json.JSONDecodeError, ValueError, requests.RequestException) as exc:
+        raise RuntimeError(f"Wikipedia API failed: {exc}")
+
+
+def _wiki_summary(query: str) -> str:
+    search = _get_json(
+        {
+            "action": "query",
+            "list": "search",
+            "srsearch": query,
+            "srlimit": 5,
+            "format": "json",
+            "origin": "*",
+        }
+    )
+    pages = search.get("query", {}).get("search", [])
+    if not pages:
+        raise RuntimeError("No Wikipedia page found.")
+
+    for page in pages:
+        title = page.get("title")
+        if not title:
+            continue
+        data = _get_json(
+            {
+                "action": "query",
+                "prop": "extracts",
+                "explaintext": 1,
+                "exintro": 1,
+                "exsentences": 3,
+                "titles": title,
+                "format": "json",
+                "origin": "*",
+            }
         )
-    except PageError:
-        # If the exact page does not exist, fall back to searching titles.
-        matches = wikipedia.search(query, results=5, suggestion=True)[0]
-        if not matches:
-            raise PageError(query)
-        return wikipedia.summary(matches[0], sentences=3, auto_suggest=False)
+        pages_obj = data.get("query", {}).get("pages", {})
+        for item in pages_obj.values():
+            text = (item.get("extract") or "").strip()
+            if text and "may refer to" not in text.lower():
+                return text
+    return "No readable summary was found for that query."
 
 
 @cipherx_cmd(pattern="wiki ?(.*)")
@@ -44,11 +72,9 @@ async def wiki(e):
         return await e.eor("`Give some text to search on wikipedia !`")
     msg = await e.eor(f"`Searching {srch} on wikipedia..`")
     try:
-        result = _summary_for(srch)
+        result = _wiki_summary(srch)
         await msg.edit(f"**Search Query :** {srch}\n\n**Results :** {result[:3900]}")
-    except PageError:
-        await msg.edit("`No Wikipedia page found for that query.`")
-    except WikipediaException as err:
-        await msg.edit(f"`Wikipedia error:` `{err}`")
+    except RuntimeError as err:
+        await msg.edit(f"`{err}`")
     except Exception as err:
         await msg.edit(f"**ERROR** : `{err}`")
