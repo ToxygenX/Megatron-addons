@@ -34,6 +34,10 @@ def get_original_url(hashed_id):
 
 
 async def get_movie_data(search_term, full_plot=False):
+    omdb_api_key = udB.get_key("OMDB")
+    if not omdb_api_key:
+        LOGS.info("OMDB API key is not set. Use `setdb OMDB <key>`")
+        return None
     if "y=" in search_term:
         parts = search_term.split("y=")
         if parts:
@@ -55,7 +59,7 @@ async def get_movie_data(search_term, full_plot=False):
         SBY = False
         movie_name = search_term
 
-    url = f"http://www.omdbapi.com/?apikey={OMDB_API_KEY}&t={movie_name}"
+    url = f"http://www.omdbapi.com/?apikey={omdb_api_key}&t={movie_name}"
 
     if SBY is True:
         url += f"&y={year}"
@@ -95,7 +99,9 @@ def get_trailer(imdbID):
 @in_pattern("imdb", owner=False)
 async def inline_imdb_command(event):
     try:
-        movie_name = event.text.split(" ", maxsplit=1)[1]
+        movie_name = (event.text or "").split(" ", maxsplit=1)[1].strip()
+        if not movie_name:
+            raise IndexError("empty")
         LOGS.info(f"QUERY\n{movie_name}")
     except IndexError:
         indexarticle = event.builder.article(
@@ -196,12 +202,15 @@ async def inline_imdb_command(event):
                     ],
                 )
             ],
-            switch_pm=f"{noresult}",
+            switch_pm="No results",
             switch_pm_param="start",
         )
     except Exception as er:
         LOGS.info(f"Exception: {er}")
         return
+
+    if not poster_url or not poster_url.lower().startswith(("http://", "https://")):
+        poster_url = imdbp
 
     txt = f"**Tɪᴛʟᴇ:** {title}\n**Rᴇʟᴇᴀsᴇᴅ:** {released}\n**Cᴏᴜɴᴛʀʏ:** {country}"
     button = [

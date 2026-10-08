@@ -15,8 +15,8 @@ async def imdb(e):
     if not movie_name:
         return await eor(m, "`Provide a movie name too`")
     try:
-        mk = await e.client.inline_query("imdb", movie_name)
-        await mk[0].click(e.chat_id)
+        results = await e.client.inline_query(asst.me.username, f"imdb {movie_name}")
+        await results[0].click(e.chat_id)
         await m.delete()
     except IndexError:
         return await eor(m, "No Results Found...")
