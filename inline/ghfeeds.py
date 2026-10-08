@@ -1,5 +1,6 @@
 from telethon.tl.custom import Button
 from telethon.tl.types import InputWebDocument
+import html
 
 from . import in_pattern, InlinePlugin, async_searcher
 
@@ -8,6 +9,11 @@ def _clean(value):
     if value is None:
         return ""
     return str(value).strip()
+
+
+def _escape(value):
+    """Escape HTML special characters."""
+    return html.escape(str(value))
 
 
 @in_pattern("gh", owner=True)
@@ -42,7 +48,7 @@ async def gh_feeds(ult):
                 await ult.builder.article(
                     title="GitHub Error",
                     description=message or "User not found",
-                    text=f"**GitHub Error**\n`{message or 'User not found'}`",
+                    text=f"<b>GitHub Error</b>\n<code>{_escape(message or 'User not found')}</code>",
                     link_preview=False,
                     buttons=[
                         Button.switch_inline(
@@ -75,24 +81,25 @@ async def gh_feeds(ult):
     created_at = _clean(data.get("created_at"))[:10]
 
     text = (
-        f"**[{name}]({profile_url})**\n"
-        f"**Username:** `@{login}`\n"
+        f"<b><a href=\"{_escape(profile_url)}\">{_escape(name)}</a></b>\n"
+        f"<b>Username:</b> <code>@{_escape(login)}</code>\n"
     )
     if bio:
-        text += f"**Bio:** {bio}\n"
+        text += f"<b>Bio:</b> {_escape(bio)}\n"
     if company:
-        text += f"**Company:** `{company}`\n"
+        text += f"<b>Company:</b> <code>{_escape(company)}</code>\n"
     if location:
-        text += f"**Location:** `{location}`\n"
+        text += f"<b>Location:</b> <code>{_escape(location)}</code>\n"
     if blog:
-        text += f"**Blog:** {blog}\n"
+        blog_url = blog if blog.startswith("http") else f"https://{blog}"
+        text += f"<b>Blog:</b> <a href=\"{_escape(blog_url)}\">{_escape(blog)}</a>\n"
     if twitter:
-        text += f"**Twitter:** `@{twitter}`\n"
+        text += f"<b>Twitter:</b> <code>@{_escape(twitter)}</code>\n"
     text += (
-        f"**Public repos:** `{public_repos}`\n"
-        f"**Followers:** `{followers}`\n"
-        f"**Following:** `{following}`\n"
-        f"**Joined:** `{created_at}`"
+        f"<b>Public repos:</b> <code>{public_repos}</code>\n"
+        f"<b>Followers:</b> <code>{followers}</code>\n"
+        f"<b>Following:</b> <code>{following}</code>\n"
+        f"<b>Joined:</b> <code>{_escape(created_at)}</code>"
     )
 
     buttons = [
@@ -100,7 +107,8 @@ async def gh_feeds(ult):
         [Button.switch_inline("Sᴇᴀʀᴄʜ Aɢᴀɪɴ", query="gh ", same_peer=True)],
     ]
     if blog:
-        buttons.insert(1, [Button.url("Bʟᴏɢ", url=blog if blog.startswith("http") else f"https://{blog}")])
+        blog_url = blog if blog.startswith("http") else f"https://{blog}"
+        buttons.insert(1, [Button.url("Bʟᴏɢ", url=blog_url)])
 
     await ult.answer(
         [
@@ -110,7 +118,7 @@ async def gh_feeds(ult):
                 text=text,
                 url=profile_url,
                 parse_mode="html",
-                link_preview=False,
+                link_preview=True,
                 thumb=InputWebDocument(avatar_url, 0, "image/jpeg", []),
                 buttons=buttons,
             )
