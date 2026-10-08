@@ -445,14 +445,25 @@ async def replied_user(draw, tot, text, maxlength, title):
 @cipherx_cmd(pattern="qbot$")
 async def _(event):
     reply = await event.get_reply_message()
-    msg = reply.message
+    if not reply:
+        return await event.eor("`Reply to a message to make a quote.`")
+    msg = reply.message or ""
     repliedreply = await reply.get_reply_message()
     user = await reply.get_sender()
     res, canvas = await process(msg, user, event.client, reply, repliedreply)
-    if not res:
+    if not res or canvas is None:
         return
-    canvas.save("sticker.webp")
+    canvas.thumbnail((512, 512))
+    outfile = f"qbot_{event.chat_id}_{event.id}.webp"
+    canvas.save(outfile, "WEBP")
     await event.client.send_file(
-        event.chat_id, "sticker.webp", reply_to=event.reply_to_msg_id
+        event.chat_id, outfile, reply_to=event.reply_to_msg_id, force_document=False
     )
-    os.remove("sticker.webp")
+    try:
+        os.remove(outfile)
+    except OSError:
+        pass
+    try:
+        await event.delete()
+    except Exception:
+        pass
