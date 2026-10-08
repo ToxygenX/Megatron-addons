@@ -23,6 +23,21 @@ from . import *
 # Ported to Ultroid
 
 
+def _is_emoji_char(letter: str) -> bool:
+    """Compatible with old and new python-emoji releases."""
+    try:
+        is_emoji = getattr(emoji, "is_emoji", None)
+        if callable(is_emoji):
+            return bool(is_emoji(letter))
+    except Exception:
+        pass
+    for attr in ("UNICODE_EMOJI", "EMOJI_UNICODE", "EMOJI_UNICODE_ENGLISH"):
+        data = getattr(emoji, attr, None)
+        if isinstance(data, dict) and letter in data:
+            return True
+    return False
+
+
 COLORS = [
     "#F07975",
     "#F49F69",
@@ -227,7 +242,7 @@ async def process(msg, user, client, reply, replied=None):
         "resources/fonts/0.otf", 43, encoding="utf-16"
     )
     for letter in tot:
-        if letter in emoji.UNICODE_EMOJI:
+        if _is_emoji_char(letter):
             newemoji, mask = await emoji_fetch(letter)
             canvas.paste(newemoji, (space, 24), mask)
             space += 40
@@ -282,7 +297,7 @@ async def process(msg, user, client, reply, replied=None):
                         "resources/fonts/18.ttf", 30, encoding="utf-16"
                     )
                     textcolor = "#898989"
-            if letter in emoji.UNICODE_EMOJI:
+            if _is_emoji_char(letter):
                 newemoji, mask = await emoji_fetch(letter)
                 canvas.paste(newemoji, (x, y - 2), mask)
                 x += 45

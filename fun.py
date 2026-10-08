@@ -1,115 +1,68 @@
 """
 ✘ Commands Available
 
-• `{i}joke`
-    To get joke.
-
-• `{i}url <long url>`
-    To get a shorten link of long link.
-
 • `{i}phlogo <first_name> <last_name>`
-    Make a phub based logo.
-
-• `{i}decide`
-    Decide something.
-
-• `{i}xo`
-    Opens tic tac game only where using inline mode is allowed.
-
-• `{i}wordi`
-    Opens word game only where using inline mode is allowed.
+    Make a phub based logo. You can also reply to a text message.
 
 • `{i}gps <name of place>`
     Shows the desired place in the map.
 """
 
-import random, os
+import os
 
-import requests
-from bs4 import BeautifulSoup as bs
-from pyjokes import get_joke
-from telethon.errors import ChatSendMediaForbiddenError
 from phlogo import generate
 
-from . import cipherx_cmd, get_string, HNDLR, async_searcher
-
-
-@cipherx_cmd(pattern="joke$")
-async def _(ult):
-    await ult.eor(get_joke())
-
-
-@cipherx_cmd(pattern="url ?(.*)")
-async def _(event):
-    input_str = event.pattern_match.group(1)
-    if not input_str:
-        await event.eor("`Give some url`")
-        return
-    sample_url = "https://da.gd/s?url={}".format(input_str)
-    response_api = requests.get(sample_url).text
-    if response_api:
-        await event.eor(
-            "**Shortened url**==> {}\n**Given url**==> {}.".format(
-                response_api, input_str
-            ),
-        )
-    else:
-        await event.eor("`Something went wrong. Please try again Later.`")
-
-
-@cipherx_cmd(pattern="decide$")
-async def _(event):
-    hm = await event.eor("`Deciding`")
-    r = await async_searcher("https://yesno.wtf/api", re_json=True)
-    try:
-        await event.reply(r["answer"], file=r["image"])
-        await hm.delete()
-    except ChatSendMediaForbiddenError:
-        await event.eor(r["answer"])
-
-
-@cipherx_cmd(pattern="xo$")
-async def xo(ult):
-    xox = await ult.client.inline_query("xobot", "play")
-    await xox[random.randrange(0, len(xox) - 1)].click(
-        ult.chat_id, reply_to=ult.reply_to_msg_id, silent=True, hide_via=True
-    )
-    await ult.delete()
+from . import cipherx_cmd, get_string, HNDLR
 
 
 @cipherx_cmd(pattern="phlogo( (.*)|$)")
 async def make_logog(ult):
     msg = await ult.eor(get_string("com_1"))
-    match = ult.pattern_match.group(1).strip()
+    try:
+        match = (ult.pattern_match.group(1) or "").strip()
+    except Exception:
+        match = ""
     reply = await ult.get_reply_message()
-    if not match and (reply and reply.text):
-        match = reply.text
-    else:
-        return await msg.edit(f"`Provide a name to make logo...`")
+    if not match and reply and getattr(reply, "text", None):
+        match = reply.text.strip()
+    if not match:
+        return await msg.edit("`Provide a name to make logo...`")
+
     first, last = "", ""
-    if len(match.split()) >= 2:
-        first, last = match.split()[:2]
+    parts = match.split(maxsplit=1)
+    if parts:
+        first = parts[0]
+    if len(parts) > 1:
+        last = parts[1]
     else:
-        last = match
+        first, last = "", parts[0]
+
     logo = generate(first, last)
     name = f"{ult.id}.png"
     logo.save(name)
-    await ult.client.send_message(
-        ult.chat_id, file=name, reply_to=ult.reply_to_msg_id or ult.id
-    )
-    os.remove(name)
+    try:
+        await ult.client.send_message(
+            ult.chat_id, file=name, reply_to=ult.reply_to_msg_id or ult.id
+        )
+    finally:
+        try:
+            os.remove(name)
+        except OSError:
+            pass
     await msg.delete()
 
 
-Bot = {"gps":"openmap_bot", "wordi":"wordibot"}
+Bot = {"gps": "openmap_bot"}
 
-@cipherx_cmd(pattern="(gps|wordi) (.*)")
+
+@cipherx_cmd(pattern="gps ?(.*)")
 async def _map(ult):
-    cmd = ult.pattern_match.group(1)
-    get = ult.pattern_match.group(2)
+    get = ult.pattern_match.group(1)
     if not get:
-        return await ult.eor(f"Use this command as `{HNDLR}{cmd} <query>`")
-    quer = await ult.client.inline_query(Bot[cmd], get)
+        return await ult.eor(f"Use this command as `{HNDLR}gps <query>`")
+    quer = await ult.client.inline_query(Bot["gps"], get)
+    if not quer:
+        return await ult.eor("`No results found.`")
     await quer[0].click(
         ult.chat_id, reply_to=ult.reply_to_msg_id, silent=True, hide_via=True
     )
