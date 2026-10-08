@@ -1,3 +1,3 @@
 from plugins import *
 
-bot = ultroid_bot
+bot = cipherx_bot

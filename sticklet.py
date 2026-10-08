@@ -18,7 +18,7 @@ from telethon.tl.types import InputMessagesFilterDocument
 from . import *
 
 
-@ultroid_cmd(pattern="sticklet (.*)")
+@cipherx_cmd(pattern="sticklet (.*)")
 async def sticklet(event):
     a = await event.eor(get_string("com_1"))
     R = random.randint(0, 256)

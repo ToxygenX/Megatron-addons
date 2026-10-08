@@ -13,7 +13,7 @@ from . import *
 TE = f"API not found, Please get it from ocr.space and set\n\ncommand `{HNDLR}setdb OCR_API your-api-key`"
 
 
-@ultroid_cmd(pattern="ocr ?(.*)")
+@cipherx_cmd(pattern="ocr ?(.*)")
 async def ocrify(ult):
     if not ult.is_reply:
         return await ult.eor("`Reply to Photo...`")

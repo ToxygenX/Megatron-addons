@@ -24,10 +24,10 @@ from random import choice
 
 from addons.waifu import deEmojify
 
-from . import ultroid_cmd, get_string
+from . import cipherx_cmd, get_string
 
 
-@ultroid_cmd(pattern="tweet ?(.*)")
+@cipherx_cmd(pattern="tweet ?(.*)")
 async def tweet(e):
     wai = await e.eor()
     text = e.pattern_match.group(1)
@@ -41,7 +41,7 @@ async def tweet(e):
         await e.eor(str(m))
 
 
-@ultroid_cmd(pattern="stic ?(.*)")
+@cipherx_cmd(pattern="stic ?(.*)")
 async def tweet(e):
     if len(e.text) > 5 and e.text[5] != " ":
         return
@@ -55,7 +55,7 @@ async def tweet(e):
     await wai.delete()
 
 
-@ultroid_cmd(pattern="gglax ?(.*)")
+@cipherx_cmd(pattern="gglax ?(.*)")
 async def gglax_sticker(e):
     wai = await e.eor(get_string("com_1"))
     text = e.pattern_match.group(1)
@@ -69,7 +69,7 @@ async def gglax_sticker(e):
         await e.eor(str(m))
 
 
-@ultroid_cmd(pattern="frog ?(.*)")
+@cipherx_cmd(pattern="frog ?(.*)")
 async def honkasays(e):
     wai = await e.eor(get_string("com_1"))
     text = e.pattern_match.group(1)
@@ -92,7 +92,7 @@ async def honkasays(e):
         await wai.edit(str(er))
 
 
-@ultroid_cmd(pattern="uta ?(.*)")
+@cipherx_cmd(pattern="uta ?(.*)")
 async def nope(doit):
     ok = doit.pattern_match.group(1)
     replied = await doit.get_reply_message()
@@ -110,7 +110,7 @@ async def nope(doit):
     await a.delete()
 
 
-@ultroid_cmd(pattern="quot ?(.*)")
+@cipherx_cmd(pattern="quot ?(.*)")
 async def quote_(event):
     IFUZI = event.pattern_match.group(1)
     if "quotly" in event.text:

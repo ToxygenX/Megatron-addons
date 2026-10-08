@@ -12,7 +12,7 @@ import wikipedia
 from . import *
 
 
-@ultroid_cmd(pattern="wiki ?(.*)")
+@cipherx_cmd(pattern="wiki ?(.*)")
 async def wiki(e):
     srch = e.pattern_match.group(1)
     if not srch:

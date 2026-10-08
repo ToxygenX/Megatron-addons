@@ -20,7 +20,7 @@ import asyncio
 from . import *
 
 
-@ultroid_cmd(pattern="tspam")
+@cipherx_cmd(pattern="tspam")
 async def tmeme(e):
     tspam = str(e.text[7:])
     message = tspam.replace(" ", "")
@@ -29,7 +29,7 @@ async def tmeme(e):
     await e.delete()
 
 
-@ultroid_cmd(pattern="spam")
+@cipherx_cmd(pattern="spam")
 async def spammer(e):
     message = e.text
     if e.reply_to:
@@ -51,7 +51,7 @@ async def spammer(e):
     await e.delete()
 
 
-@ultroid_cmd(pattern="bigspam", fullsudo=True)
+@cipherx_cmd(pattern="bigspam", fullsudo=True)
 async def bigspam(e):
     message = e.text
     if e.reply_to:
@@ -71,7 +71,7 @@ async def bigspam(e):
     await e.delete()
 
 
-@ultroid_cmd(pattern="delayspam ?(.*)")
+@cipherx_cmd(pattern="delayspam ?(.*)")
 async def delayspammer(e):
     try:
         args = e.text.split(" ", 3)

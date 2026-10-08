@@ -31,15 +31,15 @@ from pyjokes import get_joke
 from telethon.errors import ChatSendMediaForbiddenError
 from phlogo import generate
 
-from . import ultroid_cmd, get_string, HNDLR, async_searcher
+from . import cipherx_cmd, get_string, HNDLR, async_searcher
 
 
-@ultroid_cmd(pattern="joke$")
+@cipherx_cmd(pattern="joke$")
 async def _(ult):
     await ult.eor(get_joke())
 
 
-@ultroid_cmd(pattern="url ?(.*)")
+@cipherx_cmd(pattern="url ?(.*)")
 async def _(event):
     input_str = event.pattern_match.group(1)
     if not input_str:
@@ -57,7 +57,7 @@ async def _(event):
         await event.eor("`Something went wrong. Please try again Later.`")
 
 
-@ultroid_cmd(pattern="decide$")
+@cipherx_cmd(pattern="decide$")
 async def _(event):
     hm = await event.eor("`Deciding`")
     r = await async_searcher("https://yesno.wtf/api", re_json=True)
@@ -68,7 +68,7 @@ async def _(event):
         await event.eor(r["answer"])
 
 
-@ultroid_cmd(pattern="xo$")
+@cipherx_cmd(pattern="xo$")
 async def xo(ult):
     xox = await ult.client.inline_query("xobot", "play")
     await xox[random.randrange(0, len(xox) - 1)].click(
@@ -77,7 +77,7 @@ async def xo(ult):
     await ult.delete()
 
 
-@ultroid_cmd(pattern="phlogo( (.*)|$)")
+@cipherx_cmd(pattern="phlogo( (.*)|$)")
 async def make_logog(ult):
     msg = await ult.eor(get_string("com_1"))
     match = ult.pattern_match.group(1).strip()
@@ -103,7 +103,7 @@ async def make_logog(ult):
 
 Bot = {"gps":"openmap_bot", "wordi":"wordibot"}
 
-@ultroid_cmd(pattern="(gps|wordi) (.*)")
+@cipherx_cmd(pattern="(gps|wordi) (.*)")
 async def _map(ult):
     cmd = ult.pattern_match.group(1)
     get = ult.pattern_match.group(2)

@@ -173,7 +173,7 @@ def bf(text):
     return "".join(items)
 
 
-@ultroid_cmd(
+@cipherx_cmd(
     pattern="bf",
 )
 async def _(event):
@@ -187,7 +187,7 @@ async def _(event):
     await event.eor(bf(input_), parse_mode=None)
 
 
-@ultroid_cmd(
+@cipherx_cmd(
     pattern="rbf",
 )
 async def _(event):

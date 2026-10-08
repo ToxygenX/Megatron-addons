@@ -10,7 +10,7 @@ from textblob import TextBlob
 from . import *
 
 
-@ultroid_cmd(pattern="spcheck ?(.*)")
+@cipherx_cmd(pattern="spcheck ?(.*)")
 async def spellchk(event):
     to_check = event.pattern_match.group(1)
     if not to_check and event.is_reply:

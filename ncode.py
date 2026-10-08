@@ -8,10 +8,10 @@
 import pygments
 from pygments.formatters import ImageFormatter
 from pygments.lexers import Python3Lexer
-from . import ultroid_cmd, check_filename
+from . import cipherx_cmd, check_filename
 
 
-@ultroid_cmd(pattern="ncode$")
+@cipherx_cmd(pattern="ncode$")
 async def coder_print(event):
     if not event.reply_to_msg_id:
         return await event.eor("`Reply to a file or message!`", time=5)

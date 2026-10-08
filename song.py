@@ -19,7 +19,7 @@ from telethon.tl.types import InputMessagesFilterMusic as filtermus
 from . import *
 
 
-@ultroid_cmd(pattern=r"lyrics ?(.*)")
+@cipherx_cmd(pattern=r"lyrics ?(.*)")
 async def original(event):
     if not event.pattern_match.group(1):
         return await event.eor("give query to search.")
@@ -42,11 +42,11 @@ async def original(event):
     await ab.delete()
 
 
-@ultroid_cmd(pattern="song ?(.*)")
+@cipherx_cmd(pattern="song ?(.*)")
 async def _(event):
-    ultroid_bot = event.client
+    cipherx_bot = event.client
     try:
-        await ultroid_bot(ImportChatInviteRequest("DdR2SUvJPBouSW4QlbJU4g"))
+        await cipherx_bot(ImportChatInviteRequest("DdR2SUvJPBouSW4QlbJU4g"))
     except UserAlreadyParticipantError:
         pass
     except Exception:
@@ -63,10 +63,10 @@ async def _(event):
     chat = -1001271479322
     current_chat = event.chat_id
     try:
-        async for event in ultroid_bot.iter_messages(
+        async for event in cipherx_bot.iter_messages(
             chat, search=args, limit=1, filter=filtermus
         ):
-            await ultroid_bot.send_file(current_chat, event, caption=event.message)
+            await cipherx_bot.send_file(current_chat, event, caption=event.message)
         await okla.delete()
     except Exception:
         return await okla.eor("`Song not found.`")

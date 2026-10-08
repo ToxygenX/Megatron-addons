@@ -16,7 +16,7 @@ import random
 from . import *
 
 
-@ultroid_cmd(pattern="hack")
+@cipherx_cmd(pattern="hack")
 async def _(event):
     if event.fwd_from:
         return
