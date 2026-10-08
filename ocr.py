@@ -17,7 +17,7 @@ import subprocess
 import tempfile
 from pathlib import Path
 
-from telegraph import upload_file as uf
+import requests
 
 from . import *
 
@@ -182,6 +182,30 @@ def _is_photo(repm) -> bool:
     return bool(getattr(repm, "photo", None) or getattr(media, "photo", None))
 
 
+def _ocr_space_file(file_path: str, api_key: str, language: str = "") -> str:
+    with open(file_path, "rb") as f:
+        data = {"apikey": api_key, "isOverlayRequired": "false"}
+        if language:
+            data["language"] = language
+        response = requests.post(
+            "https://api.ocr.space/parse/image",
+            data=data,
+            files={"file": f},
+            timeout=180,
+        )
+    response.raise_for_status()
+    result = response.json()
+    if isinstance(result, str):
+        raise RuntimeError(result)
+    if result.get("IsErroredOnProcessing"):
+        details = result.get("ErrorMessage") or result.get("ErrorDetails") or result
+        raise RuntimeError(str(details))
+    parsed = result.get("ParsedResults") or []
+    if not parsed:
+        return ""
+    return parsed[0].get("ParsedText", "")
+
+
 @cipherx_cmd(pattern="ocr ?(.*)")
 async def ocrify(ult):
     if not ult.is_reply:
@@ -220,6 +244,29 @@ async def ocrify(ult):
                 trt = await asyncio.to_thread(_local_pdf_ocr, dl, lang)
             else:
                 trt = await asyncio.to_thread(_local_image_ocr, dl, lang)
+        except Exception as exc:
+            api = udB.get_key("OCR_API")
+            if api and (pdf or photo):
+                dl2 = dl
+                try:
+                    trt = await asyncio.to_thread(
+                        _ocr_space_file, dl2, api, "" if lang == "fas" else lang
+                    )
+                    if trt:
+                        return await msg.edit(
+                            f"**🎉 ⲞⲤR Ⲣⲟʀⲧⲁⳑ\n\nRⲉⲋυⳑⲧⲋ ~ ** `{trt[:3900]}`"
+                        )
+                except Exception:
+                    pass
+            try:
+                os.remove(dl)
+            except Exception:
+                pass
+            return await msg.edit(
+                "`Local OCR failed.`"
+                "\nMake sure tesseract, the `fas` language pack, Pillow, pdf2image and Poppler are installed."
+                f"\n`{exc}`"
+            )
         finally:
             try:
                 os.remove(dl)
@@ -235,19 +282,20 @@ async def ocrify(ult):
     OAPI = udB.get_key("OCR_API")
     if not OAPI:
         return await msg.edit(TE)
-    dl = await repm.download_media()
     try:
-        atr = ""
-        if pat and pat.lower() not in {"local", "tesseract", "pdf"}:
-            atr = f"&language={pat}"
-        tt = uf(dl)
-        li = "https://telegra.ph" + tt[0]
-        gr = await async_searcher(
-            f"https://api.ocr.space/parse/imageurl?apikey={OAPI}{atr}&url={li}",
-            re_json=True,
-        )
-        trt = gr["ParsedResults"][0]["ParsedText"]
+        dl = await repm.download_media()
+    except Exception as exc:
+        return await msg.edit(f"`Download failed:` `{exc}`")
+    try:
+        language = pat
+        if not language or language.lower() in {"local", "tesseract", "pdf"}:
+            language = ""
+        trt = await asyncio.to_thread(_ocr_space_file, dl, OAPI, language)
+        if not trt:
+            return await msg.edit("`No text extracted.`")
         await msg.edit(f"**🎉 ⲞⲤR Ⲣⲟʀⲧⲁⳑ\n\nRⲉⲋυⳑⲧⲋ ~ ** `{trt[:3900]}`")
+    except Exception as exc:
+        await msg.edit(f"`OCR failed:` `{exc}`")
     finally:
         try:
             os.remove(dl)
