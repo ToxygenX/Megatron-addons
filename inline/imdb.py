@@ -219,10 +219,8 @@ async def inline_imdb_command(event):
     ]
 
     article = await event.builder.article(
-        type="photo",
         text=txt,
         title=f"{title}",
-        include_media=True,
         description=f"{released}\nɪᴍᴅʙ: {imdbRating}\nLᴀɴɢᴜᴀɢᴇ: {language}",
         link_preview=False,
         thumb=wb(poster_url, 0, "image/jpeg", []),
