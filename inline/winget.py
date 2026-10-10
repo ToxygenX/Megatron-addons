@@ -35,4 +35,3 @@ async def search_winget(event):
     await event.answer(out, switch_pm=uppar, switch_pm_param="start", cache_time=3000)
 
 
-InlinePlugin.update({"Search Winget": "winget telegram"})
