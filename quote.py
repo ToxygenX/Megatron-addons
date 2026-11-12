@@ -38,6 +38,31 @@ def _is_emoji_char(letter: str) -> bool:
     return False
 
 
+def _text_size(font, text):
+    """Pillow 10+ text size helper; returns (width, height)."""
+    text = text or ""
+    getsize = getattr(font, "getsize", None)
+    if callable(getsize):
+        try:
+            return getsize(text)
+        except Exception:
+            pass
+    try:
+        bbox = font.getbbox(text)
+        return (bbox[2] - bbox[0], bbox[3] - bbox[1])
+    except Exception:
+        pass
+    getlength = getattr(font, "getlength", None)
+    if callable(getlength):
+        try:
+            width = int(getlength(text))
+            ascent, descent = font.getmetrics()
+            return (width, ascent + descent)
+        except Exception:
+            pass
+    return (0, 0)
+
+
 COLORS = [
     "#F07975",
     "#F49F69",
@@ -75,18 +100,18 @@ async def process(msg, user, client, reply, replied=None):
         if length > 43:
             text += textwrap.wrap(line, 43)
             maxlength = 43
-            if width < fallback.getsize(line[:43])[0]:
+            if width < _text_size(fallback, line[:43])[0]:
                 if "MessageEntityCode" in str(reply.entities):
-                    width = mono.getsize(line[:43])[0] + 30
+                    width = _text_size(mono, line[:43])[0] + 30
                 else:
-                    width = fallback.getsize(line[:43])[0]
+                    width = _text_size(fallback, line[:43])[0]
         else:
             text.append(line + "\n")
-            if width < fallback.getsize(line)[0]:
+            if width < _text_size(fallback, line)[0]:
                 if "MessageEntityCode" in str(reply.entities):
-                    width = mono.getsize(line)[0] + 30
+                    width = _text_size(mono, line)[0] + 30
                 else:
-                    width = fallback.getsize(line)[0]
+                    width = _text_size(fallback, line)[0]
             if maxlength < length:
                 maxlength = length
 
@@ -103,13 +128,13 @@ async def process(msg, user, client, reply, replied=None):
         pass
     except Exception as er:
         LOGS.exception(er)
-    titlewidth = font2.getsize(title)[0]
+    titlewidth = _text_size(font2, title)[0]
 
     # Get user name
     lname = "" if not user.last_name else user.last_name
     tot = user.first_name + " " + lname
 
-    namewidth = fallback.getsize(tot)[0] + 10
+    namewidth = _text_size(fallback, tot)[0] + 10
 
     if namewidth > width:
         width = namewidth
@@ -217,9 +242,9 @@ async def process(msg, user, client, reply, replied=None):
         else:
             docsize = str(round(reply.document.size / 1024**3, 2)) + " GB "
         docbglen = (
-            font.getsize(docsize)[0]
-            if font.getsize(docsize)[0] > font.getsize(docname)[0]
-            else font.getsize(docname)[0]
+            _text_size(font, docsize)[0]
+            if _text_size(font, docsize)[0] > _text_size(font, docname)[0]
+            else _text_size(font, docname)[0]
         )
         canvas = canvas.resize((pfpbg.width + width + docbglen, 160 + height))
         top, middle, bottom = await drawer(width + docbglen, height + 30)
@@ -249,10 +274,10 @@ async def process(msg, user, client, reply, replied=None):
         else:
             if not await fontTest(letter):
                 draw.text((space, 20), letter, font=namefallback, fill=color)
-                space += namefallback.getsize(letter)[0]
+                space += _text_size(namefallback, letter)[0]
             else:
                 draw.text((space, 20), letter, font=font, fill=color)
-                space += font.getsize(letter)[0]
+                space += _text_size(font, letter)[0]
 
     if title:
         draw.text(
@@ -305,10 +330,10 @@ async def process(msg, user, client, reply, replied=None):
             else:
                 if not await fontTest(letter):
                     draw.text((x, y), letter, font=textfallback, fill=textcolor)
-                    x += textfallback.getsize(letter)[0]
+                    x += _text_size(textfallback, letter)[0]
                 else:
                     draw.text((x, y), letter, font=font2, fill=textcolor)
-                    x += font2.getsize(letter)[0]
+                    x += _text_size(font2, letter)[0]
             msg = msg.replace(letter, "¶", 1)
         y += 40
         x = pfpbg.width + 30
@@ -428,18 +453,18 @@ async def replied_user(draw, tot, text, maxlength, title):
     for letter in tot:
         if not await fontTest(letter):
             draw.text((180 + space, 86), letter, font=namefallback, fill="#888888")
-            space += namefallback.getsize(letter)[0]
+            space += _text_size(namefallback, letter)[0]
         else:
             draw.text((180 + space, 86), letter, font=namefont, fill="#888888")
-            space += namefont.getsize(letter)[0]
+            space += _text_size(namefont, letter)[0]
     space = 0
     for letter in text:
         if not await fontTest(letter):
             draw.text((180 + space, 132), letter, font=textfallback, fill="#888888")
-            space += textfallback.getsize(letter)[0]
+            space += _text_size(textfallback, letter)[0]
         else:
             draw.text((180 + space, 132), letter, font=textfont, fill="white")
-            space += textfont.getsize(letter)[0]
+            space += _text_size(textfont, letter)[0]
 
 
 @cipherx_cmd(pattern="qbot$")
