@@ -413,21 +413,89 @@ async def no_photo(reply, tot):
     return pfp, color
 
 
-async def emoji_fetch(emoji):
-    emojis = json.loads(
-        urllib.request.urlopen(
-            "https://github.com/erenmetesar/modules-repo/raw/master/emojis.txt"
-        )
-        .read()
-        .decode()
-    )
-    if emoji in emojis:
-        img = emojis[emoji]
-        return await transparent(
-            urllib.request.urlretrieve(img, "resources/emoji.png")[0]
-        )
-    img = emojis["⛔"]
-    return await transparent(urllib.request.urlretrieve(img, "resources/emoji.png")[0])
+# Twemoji CDN — the old NiceGrill modules-repo emojis.txt map is gone (404).
+_TWEMOJI_CDN = (
+    "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/{code}.png"
+)
+_EMOJI_CACHE: dict[str, tuple] = {}
+
+
+def _twemoji_code(char: str) -> str:
+    """Build a Twemoji filename codepoint string (drop U+FE0F variation selectors)."""
+    parts = []
+    for ch in char or "":
+        cp = ord(ch)
+        if cp == 0xFE0F:
+            continue
+        parts.append(f"{cp:x}")
+    return "-".join(parts)
+
+
+def _emoji_placeholder(char: str = "•") -> tuple:
+    """Offline fallback glyph when CDN fetch fails."""
+    img = Image.new("RGBA", (40, 40), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(img)
+    try:
+        font = ImageFont.truetype("resources/fonts/0.otf", 28, encoding="utf-16")
+    except Exception:
+        font = ImageFont.load_default()
+    label = (char or "•")[:2]
+    try:
+        bbox = draw.textbbox((0, 0), label, font=font)
+        tw, th = bbox[2] - bbox[0], bbox[3] - bbox[1]
+        draw.text(((40 - tw) / 2, (40 - th) / 2 - 2), label, font=font, fill="white")
+    except Exception:
+        draw.ellipse((8, 8, 32, 32), fill="#888888")
+    mask = Image.new("L", (40, 40), 0)
+    ImageDraw.Draw(mask).ellipse((0, 0, 40, 40), fill=255)
+    return img, mask
+
+
+async def emoji_fetch(char):
+    """
+    Fetch a single emoji asset.
+
+    Uses Twemoji (jsDelivr). Results are cached. Never raises on network
+    failure — falls back to a local placeholder so `.qbot` still works.
+    """
+    key = char or ""
+    cached = _EMOJI_CACHE.get(key)
+    if cached is not None:
+        return cached
+
+    code = _twemoji_code(key)
+    if not code:
+        result = _emoji_placeholder(key)
+        _EMOJI_CACHE[key] = result
+        return result
+
+    url = _TWEMOJI_CDN.format(code=code)
+    path = os.path.join("resources", f"emoji_{code}.png")
+    try:
+        os.makedirs("resources", exist_ok=True)
+        urllib.request.urlretrieve(url, path)
+        result = await transparent(path)
+    except Exception:
+        # Retry once with FE0F kept (some Twemoji assets expect it).
+        alt_parts = [f"{ord(ch):x}" for ch in key]
+        alt = "-".join(alt_parts)
+        if alt and alt != code:
+            try:
+                urllib.request.urlretrieve(_TWEMOJI_CDN.format(code=alt), path)
+                result = await transparent(path)
+            except Exception:
+                result = _emoji_placeholder(key)
+        else:
+            result = _emoji_placeholder(key)
+    finally:
+        try:
+            if os.path.isfile(path):
+                os.remove(path)
+        except OSError:
+            pass
+
+    _EMOJI_CACHE[key] = result
+    return result
 
 
 async def transparent(emoji):
